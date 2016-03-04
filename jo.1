@@ -1,0 +1,86 @@
+.TH "JO" "1" "March 4, 2016" "User Manuals" ""
+.SH NAME
+.PP
+jo \- JSON output from a shell
+.SH SYNOPSIS
+.PP
+jo [\-p] [\-a] word [word ...]
+.SH DESCRIPTION
+.PP
+\f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from \f[I]word\f[]s
+given it as arguments.
+Without option \f[C]\-a\f[] it generates an object whereby each
+\f[I]word\f[] is a \f[C]key=value\f[] pair with \f[I]key\f[] being the
+JSON object element and \f[I]value\f[] being its value.
+\f[I]jo\f[] attempts to guess the type of \f[I]value\f[] in order to
+create number, string, or null values in JSON.
+.PP
+\f[I]jo\f[] creates an array instead of an object when \f[C]\-a\f[] is
+specified.
+.SH EXAMPLES
+.PP
+Create an object.
+Note how the incorrectly\-formatted float value becomes a string:
+.IP
+.nf
+\f[C]
+$\ jo\ lat=12.3456\ cc=FR\ notPi=3.14159.26\ name="JP\ Mens"\ money=\ 
+{"lat":12.3456,"cc":"FR","notPi":"3.14159.26","name":"JP\ Mens","money":null}
+\f[]
+.fi
+.PP
+Pretty\-print a list of files in the current directory:
+.IP
+.nf
+\f[C]
+$\ jo\ \-p\ \-a\ *
+[
+\ "Makefile",
+\ "README.md",
+\ "jo.1",
+\ "jo.c",
+\ "jo.pandoc",
+\ "json.c",
+\ "json.h",
+]
+\f[]
+.fi
+.SH OPTIONS
+.PP
+\f[I]jo\f[] understands the following options.
+.TP
+.B \-a
+Interpret the list of \f[I]words\f[] as array values and produce an
+array instead of an object.
+.RS
+.RE
+.TP
+.B \-p
+Pretty\-print the JSON string on output instead of the terse one\-line
+output it prints by default.
+.RS
+.RE
+.SH BUGS
+.PP
+Yes.
+.SH RETURN CODES
+.PP
+\f[I]jo\f[] exits with a code 0 on success, non\-zero on failure after
+indicating what caused the failure.
+.SH AVAILABILITY
+.PP
+<http://github.com/jpmens/jo>
+.SH CREDITS
+.IP \[bu] 2
+This program uses \f[C]json.[ch]\f[], by Joseph A.
+Adams.
+.SH SEE ALSO
+.IP \[bu] 2
+<https://stedolan.github.io/jq/>
+.IP \[bu] 2
+<https://github.com/micha/jsawk>
+.SH AUTHOR
+.PP
+Jan\-Piet Mens <http://jpmens.net>
+.SH AUTHORS
+Jan\-Piet Mens.
