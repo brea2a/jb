@@ -11,7 +11,7 @@ jo [\-p] [\-a] word [word ...]
 given it as arguments.
 Without option \f[C]\-a\f[] it generates an object whereby each
 \f[I]word\f[] is a \f[C]key=value\f[] pair with \f[I]key\f[] being the
-JSON object element and \f[I]value\f[] being its value.
+JSON object element and \f[I]value\f[] its value.
 \f[I]jo\f[] attempts to guess the type of \f[I]value\f[] in order to
 create number, string, or null values in JSON.
 .PP
@@ -29,7 +29,7 @@ $\ jo\ lat=12.3456\ cc=FR\ notPi=3.14159.26\ name="JP\ Mens"\ money=\
 \f[]
 .fi
 .PP
-Pretty\-print a list of files in the current directory:
+Pretty\-print an array with a list of files in the current directory:
 .IP
 .nf
 \f[C]
@@ -65,8 +65,8 @@ output it prints by default.
 Yes.
 .SH RETURN CODES
 .PP
-\f[I]jo\f[] exits with a code 0 on success, non\-zero on failure after
-indicating what caused the failure.
+\f[I]jo\f[] exits with a code 0 on success and non\-zero on failure
+after indicating what caused the failure.
 .SH AVAILABILITY
 .PP
 <http://github.com/jpmens/jo>

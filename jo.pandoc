@@ -14,7 +14,7 @@ jo [-p] [-a] word [word ...]
 
 *jo* creates a JSON string on _stdout_ from _word_s given it as arguments. Without
 option `-a` it generates an object whereby each _word_ is a `key=value` pair with
-_key_ being the JSON object element and _value_ being its value. *jo* attempts to
+_key_ being the JSON object element and _value_ its value. *jo* attempts to
 guess the type of _value_ in order to create number, string, or null values in JSON.
 
 *jo* creates an array instead of an object when `-a` is specified.
@@ -26,7 +26,7 @@ Create an object. Note how the incorrectly-formatted float value becomes a strin
 	$ jo lat=12.3456 cc=FR notPi=3.14159.26 name="JP Mens" money= 
 	{"lat":12.3456,"cc":"FR","notPi":"3.14159.26","name":"JP Mens","money":null}
 
-Pretty-print a list of files in the current directory:
+Pretty-print an array with a list of files in the current directory:
 
 	$ jo -p -a *
 	[
@@ -46,6 +46,7 @@ Pretty-print a list of files in the current directory:
 -a
 :   Interpret the list of _words_ as array values and produce an array instead of
     an object.
+
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line output it
     prints by default.
@@ -56,7 +57,7 @@ Yes.
 
 # RETURN CODES
 
-*jo* exits with a code 0 on success, non-zero on failure after indicating what
+*jo* exits with a code 0 on success and non-zero on failure after indicating what
 caused the failure.
 
 # AVAILABILITY
