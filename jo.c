@@ -56,7 +56,8 @@ JsonNode *vnode(char *str)
 }
 
 /*
- * Attempt to sniff `str' into a boolean
+ * Attempt to sniff `str' into a boolean; return a
+ * corresponding JsonNode for it.
  */
 
 JsonNode *boolnode(char *str)
@@ -65,8 +66,9 @@ JsonNode *boolnode(char *str)
 		return json_mknull();
 	}
 
-	if (tolower(*str) == 't')
+	if (tolower(*str) == 't') {
 		return json_mkbool(1);
+	}
 
 	return json_mkbool(atoi(str));
 }
@@ -74,6 +76,8 @@ JsonNode *boolnode(char *str)
 int usage(char *prog)
 {
 	fprintf(stderr, "Usage: %s [-a] [-p] word [word...]\n", prog);
+	fprintf(stderr, "\tword is key=value or key:value\n");
+	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
 	return (-1);
 }
