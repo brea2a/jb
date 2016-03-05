@@ -34,7 +34,6 @@
 
 JsonNode *vnode(char *str)
 {
-	JsonNode *jval;
 
 	if (strlen(str) == 0) {
 		return json_mknull();
@@ -55,11 +54,20 @@ JsonNode *vnode(char *str)
 	return json_mkstring(str);
 }
 
+int usage(char *prog)
+{
+	fprintf(stderr, "Usage: %s [-a] [-p] word [word...]\n", prog);
+
+	return (-1);
+}
+
 int main(int argc, char **argv)
 {
 	int c, array = FALSE;
-	char *kv, *js_string, *pretty = NULL;
+	char *kv, *js_string, *progname, *pretty = NULL;
 	JsonNode *json;
+
+	progname = (progname = strrchr(*argv, '/')) ? ++progname : *argv;
 
 	while ((c = getopt(argc, argv, "ap")) != EOF) {
 		switch (c) {
@@ -70,13 +78,16 @@ int main(int argc, char **argv)
 				pretty = " ";
 				break;
 			default:
-				puts("BAH");
-				exit(1);
+				exit(usage(progname));
 		}
 	}
 
 	argc -= optind;
 	argv += optind;
+
+	if (argc == 0) {
+		exit(usage(progname));
+	}
 
 	json = (array) ? json_mkarray() : json_mkobject();
 
@@ -88,7 +99,7 @@ int main(int argc, char **argv)
 			char *p = strchr(kv, '=');
 
 			if (!p) {
-				fprintf(stderr, "Argument `%s' is not k=v\n", kv);
+				fprintf(stderr, "%s: Argument `%s' is not k=v\n", progname, kv);
 				continue;
 			}
 			*p = 0;
