@@ -19,7 +19,8 @@ object element and *value* its value. *jo* attempts to guess the type of
 
 *jo* treats `key:value` specifically as boolean JSON elements: if the
 value begins with `T`, `t`, or the numeric value is greater than zero,
-the result is `true`, else `false`.
+the result is `true`, else `false`. A missing or empty value behind the
+colon results in a `null` JSON element.
 
 *jo* creates an array instead of an object when `-a` is specified.
 

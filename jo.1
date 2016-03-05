@@ -19,6 +19,8 @@ create number, string, or null values in JSON.
 elements: if the value begins with \f[C]T\f[], \f[C]t\f[], or the
 numeric value is greater than zero, the result is \f[C]true\f[], else
 \f[C]false\f[].
+A missing or empty value behind the colon results in a \f[C]null\f[]
+JSON element.
 .PP
 \f[I]jo\f[] creates an array instead of an object when \f[C]\-a\f[] is
 specified.
