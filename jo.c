@@ -52,6 +52,19 @@ JsonNode *vnode(char *str)
 		}
 	}
 
+	if (*str == '{') {
+		JsonNode *obj = json_decode(str);
+
+		if (obj == NULL) {
+			/* JSON cannot be decoded; return the string */
+			// fprintf(stderr, "Cannot decode JSON from %s\n", str);
+
+			obj = json_mkstring(str);
+		}
+
+		return (obj);
+	}
+
 	return json_mkstring(str);
 }
 
