@@ -51,7 +51,7 @@ Create objects within objects; this works because if the first character
 of value is an open brace we attempt to decode the remainder as JSON.
 Beware spaces in strings ...
 
-    $ jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20) number=17) sunday@0
+    $ jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20 list=$(jo -a 1 2 3 4 5)) number=17) sunday@0
     {
      "name": "JP",
      "object": {
@@ -59,7 +59,14 @@ Beware spaces in strings ...
       "hungry": false,
       "point": {
        "x": 10,
-       "y": 20
+       "y": 20,
+       "list": [
+        1,
+        2,
+        3,
+        4,
+        5
+       ]
       },
       "number": 17
      },
