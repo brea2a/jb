@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ];
 	JsonNode *json;
 
-	progname = (progname = strrchr(*argv, '/')) ? ++progname : *argv;
+	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
 	while ((c = getopt(argc, argv, "ap")) != EOF) {
 		switch (c) {
