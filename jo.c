@@ -76,7 +76,7 @@ JsonNode *boolnode(char *str)
 int usage(char *prog)
 {
 	fprintf(stderr, "Usage: %s [-a] [-p] word [word...]\n", prog);
-	fprintf(stderr, "\tword is key=value or key:value\n");
+	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
 	return (-1);
@@ -118,10 +118,10 @@ int main(int argc, char **argv)
 		} else {
 			/* we expect key=value or key:value (boolean on last) */
 			char *p = strchr(kv, '=');
-			char *q = strchr(kv, ':');
+			char *q = strchr(kv, '@');
 
 			if (!p && !q) {
-				fprintf(stderr, "%s: Argument `%s' is neither k=v nor k:v\n", progname, kv);
+				fprintf(stderr, "%s: Argument `%s' is neither k=v nor k@v\n", progname, kv);
 				continue;
 			}
 
