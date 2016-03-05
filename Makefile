@@ -1,5 +1,5 @@
 
-CFLAGS=-Werror
+CFLAGS=-Wall -Werror
 
 all: jo jo.1 README.md
 
@@ -14,3 +14,7 @@ jo.1: jo.pandoc
 README.md: jo.pandoc
 	pandoc -w markdown jo.pandoc -o README.md
 
+clean:
+	rm -f *.o
+clobber: clean
+	rm -f jo
