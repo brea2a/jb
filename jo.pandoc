@@ -8,11 +8,11 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] word [word ...]
+jo [-p] [-a] [word word ...]
 
 # DESCRIPTION
 
-*jo* creates a JSON string on _stdout_ from _word_s given it as arguments. Without
+*jo* creates a JSON string on _stdout_ from _word_s given it as arguments or read from _stdin_. Without
 option `-a` it generates an object whereby each _word_ is a `key=value` (or `key@value`)
 pair with _key_ being the JSON object element and _value_ its value. *jo* attempts to
 guess the type of _value_ in order to create number, string, or null values in JSON.

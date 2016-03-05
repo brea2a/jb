@@ -75,17 +75,53 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] word [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-p] [word word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
 	return (-1);
 }
 
+int member_to_object(JsonNode *object, char *kv)
+{
+	/* we expect key=value or key:value (boolean on last) */
+	char *p = strchr(kv, '=');
+	char *q = strchr(kv, '@');
+
+	if (!p && !q) {
+		return (-1);
+	}
+
+	if (p) {
+		*p = 0;
+
+		json_append_member(object, kv, vnode(p+1));
+	} else {
+		*q = 0;
+		json_append_member(object, kv, boolnode(q+1));
+	}
+	return (0);
+}
+
+/*
+ * Append kv to the array or object.
+ */
+
+void append_kv(JsonNode *object_or_array, int isarray, char *kv)
+{
+	if (isarray) {
+		json_append_element(object_or_array, vnode(kv));
+	} else {
+		if (member_to_object(object_or_array, kv) == -1) {
+			fprintf(stderr, "Argument `%s' is neither k=v nor k@v\n", kv);
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
-	int c, array = FALSE;
-	char *kv, *js_string, *progname, *pretty = NULL;
+	int c, isarray = FALSE;
+	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ];
 	JsonNode *json;
 
 	progname = (progname = strrchr(*argv, '/')) ? ++progname : *argv;
@@ -93,7 +129,7 @@ int main(int argc, char **argv)
 	while ((c = getopt(argc, argv, "ap")) != EOF) {
 		switch (c) {
 			case 'a':
-				array = TRUE;
+				isarray = TRUE;
 				break;
 			case 'p':
 				pretty = " ";
@@ -106,33 +142,17 @@ int main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
+	json = (isarray) ? json_mkarray() : json_mkobject();
+
 	if (argc == 0) {
-		exit(usage(progname));
-	}
-
-	json = (array) ? json_mkarray() : json_mkobject();
-
-	while ((kv = *argv++)) {
-		if (array) {
-			json_append_element(json, vnode(kv));
-		} else {
-			/* we expect key=value or key:value (boolean on last) */
-			char *p = strchr(kv, '=');
-			char *q = strchr(kv, '@');
-
-			if (!p && !q) {
-				fprintf(stderr, "%s: Argument `%s' is neither k=v nor k@v\n", progname, kv);
-				continue;
-			}
-
-			if (p) {
-				*p = 0;
-
-				json_append_member(json, kv, vnode(p+1));
-			} else {
-				*q = 0;
-				json_append_member(json, kv, boolnode(q+1));
-			}
+		while (fgets(buf, sizeof(buf), stdin) != NULL) {
+			if (buf[strlen(buf) - 1] == '\n')
+				buf[strlen(buf) - 1] = 0;
+			append_kv(json, isarray, buf);
+		}
+	} else {
+		while ((kv = *argv++)) {
+			append_kv(json, isarray, kv);
 		}
 	}
 

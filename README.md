@@ -6,16 +6,17 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] word [word ...]
+jo [-p] [-a] [word word ...]
 
 DESCRIPTION
 ===========
 
 *jo* creates a JSON string on *stdout* from *word*s given it as
-arguments. Without option `-a` it generates an object whereby each
-*word* is a `key=value` (or `key@value`) pair with *key* being the JSON
-object element and *value* its value. *jo* attempts to guess the type of
-*value* in order to create number, string, or null values in JSON.
+arguments or read from *stdin*. Without option `-a` it generates an
+object whereby each *word* is a `key=value` (or `key@value`) pair with
+*key* being the JSON object element and *value* its value. *jo* attempts
+to guess the type of *value* in order to create number, string, or null
+values in JSON.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the
 value begins with `T`, `t`, or the numeric value is greater than zero,

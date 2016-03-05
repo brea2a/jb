@@ -4,11 +4,11 @@
 jo \- JSON output from a shell
 .SH SYNOPSIS
 .PP
-jo [\-p] [\-a] word [word ...]
+jo [\-p] [\-a] [word word ...]
 .SH DESCRIPTION
 .PP
 \f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from \f[I]word\f[]s
-given it as arguments.
+given it as arguments or read from \f[I]stdin\f[].
 Without option \f[C]\-a\f[] it generates an object whereby each
 \f[I]word\f[] is a \f[C]key=value\f[] (or \f[C]key\@value\f[]) pair with
 \f[I]key\f[] being the JSON object element and \f[I]value\f[] its value.
