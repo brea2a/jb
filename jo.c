@@ -52,7 +52,7 @@ JsonNode *vnode(char *str)
 		}
 	}
 
-	if (*str == '{') {
+	if (*str == '{' || *str == '[') {
 		JsonNode *obj = json_decode(str);
 
 		if (obj == NULL) {
