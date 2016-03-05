@@ -10,10 +10,14 @@ jo [\-p] [\-a] word [word ...]
 \f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from \f[I]word\f[]s
 given it as arguments.
 Without option \f[C]\-a\f[] it generates an object whereby each
-\f[I]word\f[] is a \f[C]key=value\f[] pair with \f[I]key\f[] being the
-JSON object element and \f[I]value\f[] its value.
+\f[I]word\f[] is a \f[C]key=value\f[] (or \f[C]key:value\f[]) pair with
+\f[I]key\f[] being the JSON object element and \f[I]value\f[] its value.
 \f[I]jo\f[] attempts to guess the type of \f[I]value\f[] in order to
 create number, string, or null values in JSON.
+.PP
+\f[I]jo\f[] treats \f[C]key:value\f[] specifically as boolean JSON
+elements: if the value is zeroisch (0, f, false, FalSE) it becomes
+\f[C]false\f[], else \f[C]true\f[].
 .PP
 \f[I]jo\f[] creates an array instead of an object when \f[C]\-a\f[] is
 specified.
@@ -24,8 +28,8 @@ Note how the incorrectly\-formatted float value becomes a string:
 .IP
 .nf
 \f[C]
-$\ jo\ lat=12.3456\ cc=FR\ notPi=3.14159.26\ name="JP\ Mens"\ money=\ 
-{"lat":12.3456,"cc":"FR","notPi":"3.14159.26","name":"JP\ Mens","money":null}
+$\ jo\ tst=1457081292\ lat=12.3456\ cc=FR\ badfloat=3.14159.26\ name="JP\ Mens"\ nada=\ coffee:T
+{"tst":1457081292,"lat":12.3456,"cc":"FR","badfloat":"3.14159.26","name":"JP\ Mens","nada":null,"coffee":true}
 \f[]
 .fi
 .PP

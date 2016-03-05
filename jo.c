@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <ctype.h>
 #include "json.h"
 
 /*
@@ -54,6 +55,24 @@ JsonNode *vnode(char *str)
 	return json_mkstring(str);
 }
 
+/*
+ * Attempt to sniff `str' into a boolean
+ */
+
+JsonNode *boolnode(char *str)
+{
+	int bf = FALSE;
+
+	if (strlen(str) == 0) {
+		return json_mknull();
+	}
+
+	if (tolower(*str) == 't' || *str == '1')
+		bf = TRUE;
+
+	return json_mkbool(bf);
+}
+
 int usage(char *prog)
 {
 	fprintf(stderr, "Usage: %s [-a] [-p] word [word...]\n", prog);
@@ -95,16 +114,23 @@ int main(int argc, char **argv)
 		if (array) {
 			json_append_element(json, vnode(kv));
 		} else {
-			/* we expect key=value */
+			/* we expect key=value or key:value (boolean on last) */
 			char *p = strchr(kv, '=');
+			char *q = strchr(kv, ':');
 
-			if (!p) {
-				fprintf(stderr, "%s: Argument `%s' is not k=v\n", progname, kv);
+			if (!p && !q) {
+				fprintf(stderr, "%s: Argument `%s' is neither k=v nor k:v\n", progname, kv);
 				continue;
 			}
-			*p = 0;
 
-			json_append_member(json, kv, vnode(p+1));
+			if (p) {
+				*p = 0;
+
+				json_append_member(json, kv, vnode(p+1));
+			} else {
+				*q = 0;
+				json_append_member(json, kv, boolnode(q+1));
+			}
 		}
 	}
 

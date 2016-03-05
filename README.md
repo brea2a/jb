@@ -13,9 +13,12 @@ DESCRIPTION
 
 *jo* creates a JSON string on *stdout* from *word*s given it as
 arguments. Without option `-a` it generates an object whereby each
-*word* is a `key=value` pair with *key* being the JSON object element
-and *value* its value. *jo* attempts to guess the type of *value* in
-order to create number, string, or null values in JSON.
+*word* is a `key=value` (or `key:value`) pair with *key* being the JSON
+object element and *value* its value. *jo* attempts to guess the type of
+*value* in order to create number, string, or null values in JSON.
+
+*jo* treats `key:value` specifically as boolean JSON elements: if the
+value is zeroisch (0, f, false, FalSE) it becomes `false`, else `true`.
 
 *jo* creates an array instead of an object when `-a` is specified.
 
@@ -25,8 +28,8 @@ EXAMPLES
 Create an object. Note how the incorrectly-formatted float value becomes
 a string:
 
-    $ jo lat=12.3456 cc=FR notPi=3.14159.26 name="JP Mens" money= 
-    {"lat":12.3456,"cc":"FR","notPi":"3.14159.26","name":"JP Mens","money":null}
+    $ jo tst=1457081292 lat=12.3456 cc=FR badfloat=3.14159.26 name="JP Mens" nada= coffee:T
+    {"tst":1457081292,"lat":12.3456,"cc":"FR","badfloat":"3.14159.26","name":"JP Mens","nada":null,"coffee":true}
 
 Pretty-print an array with a list of files in the current directory:
 
