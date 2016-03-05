@@ -61,16 +61,14 @@ JsonNode *vnode(char *str)
 
 JsonNode *boolnode(char *str)
 {
-	int bf = FALSE;
-
 	if (strlen(str) == 0) {
 		return json_mknull();
 	}
 
-	if (tolower(*str) == 't' || *str == '1')
-		bf = TRUE;
+	if (tolower(*str) == 't')
+		return json_mkbool(1);
 
-	return json_mkbool(bf);
+	return json_mkbool(atoi(str));
 }
 
 int usage(char *prog)

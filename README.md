@@ -18,7 +18,8 @@ object element and *value* its value. *jo* attempts to guess the type of
 *value* in order to create number, string, or null values in JSON.
 
 *jo* treats `key:value` specifically as boolean JSON elements: if the
-value is zeroisch (0, f, false, FalSE) it becomes `false`, else `true`.
+value begins with `T`, `t`, or the numeric value is greater than zero,
+the result is `true`, else `false`.
 
 *jo* creates an array instead of an object when `-a` is specified.
 

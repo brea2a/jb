@@ -16,8 +16,9 @@ Without option \f[C]\-a\f[] it generates an object whereby each
 create number, string, or null values in JSON.
 .PP
 \f[I]jo\f[] treats \f[C]key:value\f[] specifically as boolean JSON
-elements: if the value is zeroisch (0, f, false, FalSE) it becomes
-\f[C]false\f[], else \f[C]true\f[].
+elements: if the value begins with \f[C]T\f[], \f[C]t\f[], or the
+numeric value is greater than zero, the result is \f[C]true\f[], else
+\f[C]false\f[].
 .PP
 \f[I]jo\f[] creates an array instead of an object when \f[C]\-a\f[] is
 specified.
