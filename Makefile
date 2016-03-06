@@ -9,10 +9,10 @@ jo: jo.c json.o
 json.o: json.c json.h
 
 jo.1: jo.pandoc
-	pandoc -s -w man jo.pandoc -o jo.1
+	-pandoc -s -w man jo.pandoc -o jo.1
 
 README.md: jo.pandoc
-	pandoc -w markdown jo.pandoc -o README.md
+	-pandoc -w markdown jo.pandoc -o README.md
 
 clean:
 	rm -f *.o
