@@ -48,7 +48,6 @@ JsonNode *vnode(char *str)
 		return json_mknumber(num);
 	}
 
-
 	if (*str == '{' || *str == '[') {
 		JsonNode *obj = json_decode(str);
 
