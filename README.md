@@ -89,7 +89,11 @@ OPTIONS
 BUGS
 ====
 
-Yes.
+Probably.
+
+If a value given to *jo* expands to empty in the shell, then *jo*
+produces a `null` in object mode, and might appear to hang in array
+mode; it is not hanging, rather it's reading *stdin*. This is not a bug.
 
 RETURN CODES
 ============

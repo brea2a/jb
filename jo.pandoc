@@ -81,7 +81,9 @@ Create objects within objects; this works because if the first character of valu
 
 # BUGS
 
-Yes.
+Probably.
+
+If a value given to *jo* expands to empty in the shell, then *jo* produces a `null` in object mode, and might appear to hang in array mode; it is not hanging, rather it's reading _stdin_. This is not a bug.
 
 # RETURN CODES
 

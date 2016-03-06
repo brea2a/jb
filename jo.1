@@ -100,7 +100,13 @@ output it prints by default.
 .RE
 .SH BUGS
 .PP
-Yes.
+Probably.
+.PP
+If a value given to \f[I]jo\f[] expands to empty in the shell, then
+\f[I]jo\f[] produces a \f[C]null\f[] in object mode, and might appear to
+hang in array mode; it is not hanging, rather it\[aq]s reading
+\f[I]stdin\f[].
+This is not a bug.
 .SH RETURN CODES
 .PP
 \f[I]jo\f[] exits with a code 0 on success and non\-zero on failure
