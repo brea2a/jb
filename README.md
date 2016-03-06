@@ -6,7 +6,7 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] [word word ...]
+jo [-p] [-a] [word ...]
 
 DESCRIPTION
 ===========

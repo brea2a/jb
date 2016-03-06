@@ -84,7 +84,7 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] [word word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-p] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
