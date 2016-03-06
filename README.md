@@ -116,6 +116,7 @@ SEE ALSO
 
 -   <https://stedolan.github.io/jq/>
 -   <https://github.com/micha/jsawk>
+-   strtod(3)
 
 AUTHOR
 ======

@@ -1,6 +1,4 @@
 % JO(1) User Manuals
-% Jan-Piet Mens
-% March 4, 2016
 
 # NAME
 
@@ -102,6 +100,7 @@ caused the failure.
 
 * <https://stedolan.github.io/jq/>
 * <https://github.com/micha/jsawk>
+* strtod(3)
 
 # AUTHOR
 
