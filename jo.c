@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 				isarray = TRUE;
 				break;
 			case 'p':
-				pretty = " ";
+				pretty = "   ";
 				break;
 			default:
 				exit(usage(progname));
