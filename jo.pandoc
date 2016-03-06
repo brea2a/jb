@@ -13,7 +13,7 @@ jo [-p] [-a] [word word ...]
 *jo* creates a JSON string on _stdout_ from _word_s given it as arguments or read from _stdin_. Without
 option `-a` it generates an object whereby each _word_ is a `key=value` (or `key@value`)
 pair with _key_ being the JSON object element and _value_ its value. *jo* attempts to
-guess the type of _value_ in order to create number, string, or null values in JSON.
+guess the type of _value_ in order to create number (using _strtod(3)_), string, or null values in JSON.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the value begins with `T`, `t`,
 or the numeric value is greater than zero, the result is `true`, else `false`. A missing or

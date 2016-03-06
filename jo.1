@@ -13,7 +13,8 @@ Without option \f[C]\-a\f[] it generates an object whereby each
 \f[I]word\f[] is a \f[C]key=value\f[] (or \f[C]key\@value\f[]) pair with
 \f[I]key\f[] being the JSON object element and \f[I]value\f[] its value.
 \f[I]jo\f[] attempts to guess the type of \f[I]value\f[] in order to
-create number, string, or null values in JSON.
+create number (using \f[I]strtod(3)\f[]), string, or null values in
+JSON.
 .PP
 \f[I]jo\f[] treats \f[C]key\@value\f[] specifically as boolean JSON
 elements: if the value begins with \f[C]T\f[], \f[C]t\f[], or the
