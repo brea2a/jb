@@ -48,8 +48,8 @@ Pretty-print an array with a list of files in the current directory:
     ]
 
 Create objects within objects; this works because if the first character
-of value is an open brace we attempt to decode the remainder as JSON.
-Beware spaces in strings ...
+of value is an open brace or a bracket we attempt to decode the
+remainder as JSON. Beware spaces in strings ...
 
     $ jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20 list=$(jo -a 1 2 3 4 5)) number=17) sunday@0
     {

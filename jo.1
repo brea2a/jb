@@ -54,7 +54,8 @@ $\ jo\ \-p\ \-a\ *
 .fi
 .PP
 Create objects within objects; this works because if the first character
-of value is an open brace we attempt to decode the remainder as JSON.
+of value is an open brace or a bracket we attempt to decode the
+remainder as JSON.
 Beware spaces in strings ...
 .IP
 .nf
