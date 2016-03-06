@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,17 +41,13 @@ JsonNode *vnode(char *str)
 		return json_mknull();
 	}
 
-	if (strspn(str, "01234567890") == strlen(str)) {
-		return json_mknumber(atol(str));
+	char *endptr;
+	double num = strtod(str, &endptr);
+
+	if (!*endptr && isfinite(num)) {
+		return json_mknumber(num);
 	}
 
-	if (strspn(str, "01234567890.") == strlen(str)) {
-		if (strchr(str, '.') == strrchr(str, '.')) {
-			return json_mknumber(atof(str));
-		} else {
-			return json_mkstring(str);
-		}
-	}
 
 	if (*str == '{' || *str == '[') {
 		JsonNode *obj = json_decode(str);
