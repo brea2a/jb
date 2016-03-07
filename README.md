@@ -13,6 +13,6 @@ jo -p name=jo n=17 parser@0
 }
 ```
 
-To build it, type `make`. It has a [manual](jo.md) and you can read [why I wrote jo](http://jpmens.net/2016/03/05/a-shell-command-to-create-json-jo/).
+To build it, type `make`. It has a [manual](jo.md), and you can read [why I wrote jo](http://jpmens.net/2016/03/05/a-shell-command-to-create-json-jo/).
 
 
