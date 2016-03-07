@@ -108,6 +108,20 @@ If a value given to \f[I]jo\f[] expands to empty in the shell, then
 hang in array mode; it is not hanging, rather it\[aq]s reading
 \f[I]stdin\f[].
 This is not a bug.
+.PP
+Numeric values are converted to numbers which can produce undesired
+results.
+If you quote a numeric value, \f[I]jo\f[] will make it a string.
+Compare the following:
+.IP
+.nf
+\f[C]
+$\ jo\ a=1.0
+{"a":1}
+$\ jo\ a=\\"1.0\\"
+{"a":"1.0"}
+\f[]
+.fi
 .SH RETURN CODES
 .PP
 \f[I]jo\f[] exits with a code 0 on success and non\-zero on failure

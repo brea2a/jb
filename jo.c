@@ -41,6 +41,16 @@ JsonNode *vnode(char *str)
 		return json_mknull();
 	}
 
+	/* If str begins with a double quote, keep it a string */
+
+	if (*str == '"') {
+		char *bp = str + strlen(str) - 1;
+
+		if (bp > str && *bp == '"')
+			*bp = 0;		/* Chop closing double quote */
+		return json_mkstring(str + 1);
+	}
+
 	char *endptr;
 	double num = strtod(str, &endptr);
 

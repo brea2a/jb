@@ -95,6 +95,15 @@ If a value given to *jo* expands to empty in the shell, then *jo*
 produces a `null` in object mode, and might appear to hang in array
 mode; it is not hanging, rather it's reading *stdin*. This is not a bug.
 
+Numeric values are converted to numbers which can produce undesired
+results. If you quote a numeric value, *jo* will make it a string.
+Compare the following:
+
+    $ jo a=1.0
+    {"a":1}
+    $ jo a=\"1.0\"
+    {"a":"1.0"}
+
 RETURN CODES
 ============
 
