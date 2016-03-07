@@ -4,7 +4,7 @@ CFLAGS += -Wall -Werror
 all: jo jo.1 jo.md
 
 jo: jo.c json.o
-	$(CC) $(CFLAGS) -o jo jo.c json.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o jo jo.c json.o
 
 json.o: json.c json.h
 
