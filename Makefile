@@ -1,5 +1,5 @@
 
-CFLAGS=-Wall -Werror
+CFLAGS += -Wall -Werror
 
 all: jo jo.1 README.md
 
