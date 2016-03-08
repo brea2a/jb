@@ -44,7 +44,7 @@ Pretty-print an array with a list of files in the current directory:
      "jo.c",
      "jo.pandoc",
      "json.c",
-     "json.h",
+     "json.h"
     ]
 
 Create objects within objects; this works because if the first character
