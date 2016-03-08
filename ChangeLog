@@ -1,5 +1,5 @@
 
-2016-03-08 0.5
+2016-03-08 0.6
 - FIX: make build work on CentOS 6 (#13)
 - NEW: JSONy version with -V
 
