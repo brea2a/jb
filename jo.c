@@ -211,7 +211,7 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p)
 #endif
 
-int version()
+int version(char *pretty)
 {
 	JsonNode *json = json_mkobject();
 	char *js;
@@ -221,7 +221,7 @@ int version()
 	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
 	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
 
-	if ((js = json_stringify(json, NULL)) != NULL) {
+	if ((js = json_stringify(json, pretty)) != NULL) {
 		printf("%s\n", js);
 		free(js);
 	}
@@ -231,7 +231,7 @@ int version()
 
 int main(int argc, char **argv)
 {
-	int c, isarray = FALSE;
+	int c, isarray = FALSE, showversion = FALSE;
 	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ], *p;
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	JsonNode *json;
@@ -250,10 +250,15 @@ int main(int argc, char **argv)
 				printf("jo %s\n", PACKAGE_VERSION);
 				exit(0);
 			case 'V':
-				exit(version());
+				showversion = TRUE;
+				break;
 			default:
 				exit(usage(progname));
 		}
+	}
+
+	if (showversion) {
+		return(version(pretty));
 	}
 
 	argc -= optind;
