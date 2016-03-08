@@ -6,7 +6,7 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] [word ...]
+jo [-p] [-a] [-v] [word ...]
 
 DESCRIPTION
 ===========
@@ -85,6 +85,9 @@ OPTIONS
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
     output it prints by default.
+
+-v
+:   Show version and exit.
 
 BUGS
 ====

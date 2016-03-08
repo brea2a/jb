@@ -94,7 +94,7 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "ap")) != EOF) {
+	while ((c = getopt(argc, argv, "apv")) != EOF) {
 		switch (c) {
 			case 'a':
 				isarray = TRUE;
@@ -153,6 +153,9 @@ int main(int argc, char **argv)
 			case 'p':
 				pretty = "   ";
 				break;
+			case 'v':
+				printf("jo %s\n", PACKAGE_VERSION);
+				exit(0);
 			default:
 				exit(usage(progname));
 		}
