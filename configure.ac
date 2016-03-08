@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([jo], [0.3], [jpmens@gmail.com])
+AC_INIT([jo], [0.4], [jpmens@gmail.com])
 AC_CONFIG_SRCDIR([jo.c])
 
 # Checks for programs.
