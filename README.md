@@ -47,3 +47,12 @@ cd jo-0.?
 make check
 make install
 ```
+
+## Homebrew
+
+To install with Homebrew, use [the tap](https://github.com/caius/homebrew-jo).
+
+```bash
+brew tap caius/jo
+brew install jo
+```
