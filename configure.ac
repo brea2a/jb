@@ -27,3 +27,16 @@ fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
+
+echo "
+  Jo.............: version $PACKAGE_VERSION
+  Prefix.........: $prefix
+  C compiler.....: $CC $CFLAGS $CPPFLAGS
+  Pandoc.........: ${PANDOC:-NONE}
+
+  Now type 'make @<:@<target>@:>@'
+    where the optional <target> is:
+      all                - build all binaries
+      check              - run the tests
+      install            - install everything
+"
