@@ -1,5 +1,5 @@
 
-AM_CFLAGS	= -Wall -std=c99 -O2
+AM_CFLAGS	= -Wall -O2
 
 bin_PROGRAMS	= jo
 jo_SOURCES	= jo.c json.c json.h
