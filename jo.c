@@ -86,7 +86,7 @@ JsonNode *boolnode(char *str)
 		return json_mknull();
 	}
 
-	if (tolower(*str) == 't') {
+	if (tolower((unsigned char) *str) == 't') {
 		return json_mkbool(1);
 	}
 
