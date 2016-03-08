@@ -6,7 +6,7 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] [-v] [word ...]
+jo [-p] [-a] [-v] [-V] [word ...]
 
 DESCRIPTION
 ===========
@@ -88,6 +88,9 @@ OPTIONS
 
 -v
 :   Show version and exit.
+
+-V
+:   Show version as a JSON object and exit.
 
 BUGS
 ====
