@@ -95,7 +95,7 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [-V] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
 
@@ -211,6 +211,24 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p)
 #endif
 
+int version()
+{
+	JsonNode *json = json_mkobject();
+	char *js;
+
+	json_append_member(json, "program", json_mkstring("jo"));
+	json_append_member(json, "author", json_mkstring("Jan-Piet Mens"));
+	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
+	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
+
+	if ((js = json_stringify(json, NULL)) != NULL) {
+		printf("%s\n", js);
+		free(js);
+	}
+	json_delete(json);
+	return (0);
+}
+
 int main(int argc, char **argv)
 {
 	int c, isarray = FALSE;
@@ -220,7 +238,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "apv")) != EOF) {
+	while ((c = getopt(argc, argv, "apvV")) != EOF) {
 		switch (c) {
 			case 'a':
 				isarray = TRUE;
@@ -231,6 +249,8 @@ int main(int argc, char **argv)
 			case 'v':
 				printf("jo %s\n", PACKAGE_VERSION);
 				exit(0);
+			case 'V':
+				exit(version());
 			default:
 				exit(usage(progname));
 		}

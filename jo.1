@@ -4,7 +4,7 @@
 jo \- JSON output from a shell
 .SH SYNOPSIS
 .PP
-jo [\-p] [\-a] [\-v] [word ...]
+jo [\-p] [\-a] [\-v] [\-V] [word ...]
 .SH DESCRIPTION
 .PP
 \f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from \f[I]word\f[]s
@@ -102,6 +102,11 @@ output it prints by default.
 .TP
 .B \-v
 Show version and exit.
+.RS
+.RE
+.TP
+.B \-V
+Show version as a JSON object and exit.
 .RS
 .RE
 .SH BUGS
