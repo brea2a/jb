@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <getopt.h>
 #include <ctype.h>
@@ -137,10 +138,84 @@ void append_kv(JsonNode *object_or_array, int isarray, char *kv)
 	}
 }
 
+#ifdef _WIN32
+#include <windows.h>
+char* utf8_from_locale(const char *str, size_t len)
+{
+	wchar_t* wcsp;
+	char* mbsp;
+	size_t mbssize, wcssize;
+
+	if (len == 0) {
+		return strdup("");
+	}
+	if (len == -1) {
+		len = strlen(str);
+	}
+	wcssize = MultiByteToWideChar(GetACP(), 0, str, len,  NULL, 0);
+	wcsp = (wchar_t*) malloc((wcssize + 1) * sizeof(wchar_t));
+	if (!wcsp) {
+		return NULL;
+	}
+	wcssize = MultiByteToWideChar(GetACP(), 0, str, len, wcsp, wcssize + 1);
+	wcsp[wcssize] = 0;
+
+	mbssize = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR) wcsp, -1, NULL, 0, NULL, NULL);
+	mbsp = (char*) malloc((mbssize + 1));
+	if (!mbsp) {
+		free(wcsp);
+		return NULL;
+	}
+	mbssize = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR) wcsp, -1, mbsp, mbssize, NULL, NULL);
+	mbsp[mbssize] = 0;
+	free(wcsp);
+	return mbsp;
+}
+# define utf8_free(p) free(p)
+
+char* locale_from_utf8(const char *utf8, size_t len)
+{
+	wchar_t* wcsp;
+	char* mbsp;
+	size_t mbssize, wcssize;
+
+	if (len == 0) {
+		return strdup("");
+	}
+	if (len == -1) {
+		len = strlen(utf8);
+	}
+	wcssize = MultiByteToWideChar(CP_UTF8, 0, utf8, len,  NULL, 0);
+	wcsp = (wchar_t*) malloc((wcssize + 1) * sizeof(wchar_t));
+	if (!wcsp) {
+		return NULL;
+	}
+	wcssize = MultiByteToWideChar(CP_UTF8, 0, utf8, len, wcsp, wcssize + 1);
+	wcsp[wcssize] = 0;
+	mbssize = WideCharToMultiByte(GetACP(), 0, (LPCWSTR) wcsp, -1, NULL, 0, NULL, NULL);
+	mbsp = (char*) malloc((mbssize + 1));
+	if (!mbsp) {
+		free(wcsp);
+		return NULL;
+	}
+	mbssize = WideCharToMultiByte(GetACP(), 0, (LPCWSTR) wcsp, -1, mbsp, mbssize, NULL, NULL);
+	mbsp[mbssize] = 0;
+	free(wcsp);
+	return mbsp;
+}
+# define locale_free(p) free(p)
+#else
+# define utf8_from_locale(p, l) (p)
+# define utf8_free(p)
+# define locale_from_utf8(p, l) (p)
+# define locale_free(p)
+#endif
+
 int main(int argc, char **argv)
 {
 	int c, isarray = FALSE;
-	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ];
+	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ], *p;
+	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	JsonNode *json;
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
@@ -170,11 +245,15 @@ int main(int argc, char **argv)
 		while (fgets(buf, sizeof(buf), stdin) != NULL) {
 			if (buf[strlen(buf) - 1] == '\n')
 				buf[strlen(buf) - 1] = 0;
-			append_kv(json, isarray, buf);
+			p = ttyin ? utf8_from_locale(buf, -1) : buf;
+			append_kv(json, isarray, p);
+			if (ttyin) utf8_free(p);
 		}
 	} else {
 		while ((kv = *argv++)) {
-			append_kv(json, isarray, kv);
+			p = utf8_from_locale(kv, -1);
+			append_kv(json, isarray, p);
+			utf8_free(p);
 		}
 	}
 
@@ -183,7 +262,9 @@ int main(int argc, char **argv)
 		exit(2);
 	}
 
-	printf("%s\n", js_string);
+	p = ttyout ? locale_from_utf8(js_string, -1) : js_string;
+	printf("%s\n", p);
+	if (ttyout) locale_free(p);
 	free(js_string);
 	json_delete(json);
 	return (0);
