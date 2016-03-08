@@ -38,7 +38,7 @@ make install
 
 ## Build from Release tarball
 
-You will need a C compiler to install from a source tarball.
+To build from [a release](https://github.com/jpmens/jo/releases) you will need a C compiler to install from a source tarball.
 
 ```bash
 tar xvzf jo-0.?.tar.gz
