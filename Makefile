@@ -14,6 +14,10 @@ jo.1: jo.pandoc
 jo.md: jo.pandoc
 	-pandoc -w markdown jo.pandoc -o jo.md
 
+test: jo
+	[ $$(./jo n=7 a=Hello) = '{"n":7,"a":"Hello"}' ]
+	[ $$(./jo -a jo) = '["jo"]' ]
+
 clean:
 	rm -f *.o
 clobber: clean
