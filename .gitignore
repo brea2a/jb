@@ -1,6 +1,37 @@
 *.dSYM
 .DS_Store
 *.o
+*.so
+*.la
+*.lai
+*.so.*
+
+# Autotools junk
+.libs
+.deps
+.dirstamp
+libtool
+*.log
+stamp-h1
+config.log
+config.status
+autom4te.cache
+INSTALL
+Makefile
+jo-*.tar.gz
+configure
+aclocal.m4
+Makefile.in
+version.h
+config.cache
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+tests/*.trs
+
+
 jo
 g
 
