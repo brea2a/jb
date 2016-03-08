@@ -1,4 +1,7 @@
 
+2016-03-08 0.5
+- FIX: fileno error (#12)
+
 2016-03-08 0.4
 - NEW: Win32 support for CJK contributed by @mattn
 

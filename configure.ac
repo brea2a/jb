@@ -1,11 +1,12 @@
 AC_PREREQ([2.69])
-AC_INIT([jo], [0.4], [jpmens@gmail.com])
+AC_INIT([jo], [0.5], [jpmens@gmail.com])
 AC_CONFIG_SRCDIR([jo.c])
 
 # Checks for programs.
 AC_PROG_CC
 
 # Checks for header files.
+AC_USE_SYSTEM_EXTENSIONS
 AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h])
 
 # Checks for library functions.
