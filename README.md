@@ -56,3 +56,8 @@ To install with Homebrew, use [the tap](https://github.com/caius/homebrew-jo).
 brew tap caius/jo
 brew install jo
 ```
+
+## Others
+
+* [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
+* [ArchLinux](https://aur.archlinux.org/packages/jo/)
