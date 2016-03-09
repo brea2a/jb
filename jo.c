@@ -59,6 +59,12 @@ JsonNode *vnode(char *str)
 		return json_mknumber(num);
 	}
 
+	if (strcmp(str, "true") == 0) {
+		return json_mkbool(true);
+	} else if (strcmp(str, "false") == 0) {
+		return json_mkbool(false);
+	}
+
 	if (*str == '{' || *str == '[') {
 		JsonNode *obj = json_decode(str);
 
