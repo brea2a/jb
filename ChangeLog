@@ -1,4 +1,8 @@
 
+- FIX: test.sh get quotes to prevent failures with pdksh (#16)
+- FIX: pretty-print Version if requested (#15)
+- FIX: Add cast to suppress warning when compiling with GCC 4.8.4 (#14)
+
 2016-03-08 0.6
 - FIX: make build work on CentOS 6 (#13)
 - NEW: JSONy version with -V
