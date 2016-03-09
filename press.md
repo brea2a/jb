@@ -7,6 +7,9 @@
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The kind of &quot;why didn&#39;t *I* think of this?&quot; <a href="https://t.co/VlDC79midI">https://t.co/VlDC79midI</a></p>&mdash; Yiorgos Adamopoulos (@hakmem) <a href="https://twitter.com/hakmem/status/706181245328293888">March 5, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+<blockquote class="twitter-tweet" data-lang="en"><p lang="fr" dir="ltr">jq&#39;s companion <a href="https://t.co/vwYwVxwB4S">https://t.co/vwYwVxwB4S</a></p>&mdash; Sylvain (@flyinva) <a href="https://twitter.com/flyinva/status/706567570141351936">March 6, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/jpmens">@jpmens</a> <a href="https://twitter.com/miekg">@miekg</a> i Love Jo.</p>&mdash; Robert Weißgraeber (@robert_we) <a href="https://twitter.com/robert_we/status/706182485261086724">March 5, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
