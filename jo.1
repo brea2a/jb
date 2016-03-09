@@ -4,7 +4,7 @@
 jo \- JSON output from a shell
 .SH SYNOPSIS
 .PP
-jo [\-p] [\-a] [\-v] [\-V] [word ...]
+jo [\-p] [\-a] [\-B] [\-v] [\-V] [word ...]
 .SH DESCRIPTION
 .PP
 \f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from \f[I]word\f[]s
@@ -84,6 +84,20 @@ $\ jo\ \-p\ name=JP\ object=$(jo\ fruit=Orange\ hungry\@0\ point=$(jo\ x=10\ y=2
 }
 \f[]
 .fi
+.PP
+Booleans as strings or as boolean (pay particular attention to
+\f[I]switch\f[]; the \f[C]\-B\f[] option disables the default detection
+of the "\f[C]true\f[]" and "\f[C]false\f[]" strings):
+.IP
+.nf
+\f[C]
+$\ jo\ switch=true\ morning\@0
+{"switch":true,"morning":false}
+
+$\ jo\ \-B\ switch=true\ morning\@0
+{"switch":"true","morning":false}
+\f[]
+.fi
 .SH OPTIONS
 .PP
 \f[I]jo\f[] understands the following options.
@@ -91,6 +105,14 @@ $\ jo\ \-p\ name=JP\ object=$(jo\ fruit=Orange\ hungry\@0\ point=$(jo\ x=10\ y=2
 .B \-a
 Interpret the list of \f[I]words\f[] as array values and produce an
 array instead of an object.
+.RS
+.RE
+.TP
+.B \-B
+By default \f[I]jo\f[] interprets the strings "\f[C]true\f[]" and
+"\f[C]false\f[]" as meaning boolean elements \f[C]true\f[] and
+\f[C]false\f[] respectively.
+Disable with this option.
 .RS
 .RE
 .TP

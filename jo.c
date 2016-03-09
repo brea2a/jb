@@ -30,12 +30,17 @@
 # define FALSE	(0)
 #endif
 
+#define SPACER		"   "
+#define FLAG_ARRAY	0x01
+#define FLAG_PRETTY	0x02
+#define FLAG_NOBOOL	0x04
+
 /*
  * Attempt to "sniff" the type of data in `str' and return
  * a JsonNode of the correct JSON type.
  */
 
-JsonNode *vnode(char *str)
+JsonNode *vnode(char *str, int flags)
 {
 
 	if (strlen(str) == 0) {
@@ -59,10 +64,12 @@ JsonNode *vnode(char *str)
 		return json_mknumber(num);
 	}
 
-	if (strcmp(str, "true") == 0) {
-		return json_mkbool(true);
-	} else if (strcmp(str, "false") == 0) {
-		return json_mkbool(false);
+	if (!(flags & FLAG_NOBOOL)) {
+		if (strcmp(str, "true") == 0) {
+			return json_mkbool(true);
+		} else if (strcmp(str, "false") == 0) {
+			return json_mkbool(false);
+		}
 	}
 
 	if (*str == '{' || *str == '[') {
@@ -101,14 +108,16 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [-V] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [-V] [-B] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
-	fprintf(stderr, "\t-a creates an array of words, -p pretty-prints\n");
+	fprintf(stderr, "\t-a creates an array of words\n");
+	fprintf(stderr, "\t-B disable boolean true/false\n");
+	fprintf(stderr, "\t-p pretty-prints\n");
 
 	return (-1);
 }
 
-int member_to_object(JsonNode *object, char *kv)
+int member_to_object(JsonNode *object, int flags, char *kv)
 {
 	/* we expect key=value or key:value (boolean on last) */
 	char *p = strchr(kv, '=');
@@ -121,7 +130,7 @@ int member_to_object(JsonNode *object, char *kv)
 	if (p) {
 		*p = 0;
 
-		json_append_member(object, kv, vnode(p+1));
+		json_append_member(object, kv, vnode(p+1, flags));
 	} else {
 		*q = 0;
 		json_append_member(object, kv, boolnode(q+1));
@@ -133,12 +142,12 @@ int member_to_object(JsonNode *object, char *kv)
  * Append kv to the array or object.
  */
 
-void append_kv(JsonNode *object_or_array, int isarray, char *kv)
+void append_kv(JsonNode *object_or_array, int flags, char *kv)
 {
-	if (isarray) {
-		json_append_element(object_or_array, vnode(kv));
+	if (flags & FLAG_ARRAY) {
+		json_append_element(object_or_array, vnode(kv, flags));
 	} else {
-		if (member_to_object(object_or_array, kv) == -1) {
+		if (member_to_object(object_or_array, flags, kv) == -1) {
 			fprintf(stderr, "Argument `%s' is neither k=v nor k@v\n", kv);
 		}
 	}
@@ -217,7 +226,7 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p)
 #endif
 
-int version(char *pretty)
+int version(int flags)
 {
 	JsonNode *json = json_mkobject();
 	char *js;
@@ -227,7 +236,7 @@ int version(char *pretty)
 	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
 	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
 
-	if ((js = json_stringify(json, pretty)) != NULL) {
+	if ((js = json_stringify(json, (flags & FLAG_PRETTY) ? SPACER : NULL)) != NULL) {
 		printf("%s\n", js);
 		free(js);
 	}
@@ -237,20 +246,24 @@ int version(char *pretty)
 
 int main(int argc, char **argv)
 {
-	int c, isarray = FALSE, showversion = FALSE;
-	char *kv, *js_string, *progname, *pretty = NULL, buf[BUFSIZ], *p;
+	int c, showversion = FALSE;
+	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
+	int flags = 0;
 	JsonNode *json;
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "apvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBpvV")) != EOF) {
 		switch (c) {
 			case 'a':
-				isarray = TRUE;
+				flags |= FLAG_ARRAY;
+				break;
+			case 'B':
+				flags |= FLAG_NOBOOL;
 				break;
 			case 'p':
-				pretty = "   ";
+				flags |= FLAG_PRETTY;
 				break;
 			case 'v':
 				printf("jo %s\n", PACKAGE_VERSION);
@@ -264,31 +277,31 @@ int main(int argc, char **argv)
 	}
 
 	if (showversion) {
-		return(version(pretty));
+		return(version(flags));
 	}
 
 	argc -= optind;
 	argv += optind;
 
-	json = (isarray) ? json_mkarray() : json_mkobject();
+	json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
 
 	if (argc == 0) {
 		while (fgets(buf, sizeof(buf), stdin) != NULL) {
 			if (buf[strlen(buf) - 1] == '\n')
 				buf[strlen(buf) - 1] = 0;
 			p = ttyin ? utf8_from_locale(buf, -1) : buf;
-			append_kv(json, isarray, p);
+			append_kv(json, flags, p);
 			if (ttyin) utf8_free(p);
 		}
 	} else {
 		while ((kv = *argv++)) {
 			p = utf8_from_locale(kv, -1);
-			append_kv(json, isarray, p);
+			append_kv(json, flags, p);
 			utf8_free(p);
 		}
 	}
 
-	if ((js_string = json_stringify(json, pretty)) == NULL) {
+	if ((js_string = json_stringify(json, (flags & FLAG_PRETTY) ? SPACER : NULL)) == NULL) {
 		fprintf(stderr, "Invalid JSON\n");
 		exit(2);
 	}

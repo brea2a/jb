@@ -17,7 +17,7 @@ jo.1: jo.pandoc
 jo.md: jo.pandoc
 	@test -n "$(PANDOC)" || \
 	  { echo 'pandoc' not found during configure.; exit 1; }
-	$(PANDOC) -s -w man -o $@ $<
+	$(PANDOC) -s -w markdown -o $@ $<
 
 endif
 
@@ -26,4 +26,4 @@ endif
 
 TESTS		= tests.sh
 
-EXTRA_DIST	= $(TESTS)
+EXTRA_DIST	= $(TESTS) $(jo_EXTRA)

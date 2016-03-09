@@ -1,3 +1,7 @@
+---
+title: 'JO(1) User Manuals'
+...
+
 NAME
 ====
 
@@ -6,7 +10,7 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] [-v] [-V] [word ...]
+jo [-p] [-a] [-B] [-v] [-V] [word ...]
 
 DESCRIPTION
 ===========
@@ -73,6 +77,16 @@ remainder as JSON. Beware spaces in strings ...
      "sunday": false
     }
 
+Booleans as strings or as boolean (pay particular attention to *switch*;
+the `-B` option disables the default detection of the "`true`" and
+"`false`" strings):
+
+    $ jo switch=true morning@0
+    {"switch":true,"morning":false}
+
+    $ jo -B switch=true morning@0
+    {"switch":"true","morning":false}
+
 OPTIONS
 =======
 
@@ -81,6 +95,11 @@ OPTIONS
 -a
 :   Interpret the list of *words* as array values and produce an array
     instead of an object.
+
+-B
+:   By default *jo* interprets the strings "`true`" and "`false`" as
+    meaning boolean elements `true` and `false` respectively. Disable
+    with this option.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
@@ -137,4 +156,3 @@ AUTHOR
 ======
 
 Jan-Piet Mens <http://jpmens.net>
-

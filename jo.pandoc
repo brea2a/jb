@@ -6,7 +6,7 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] [-v] [-V] [word ...]
+jo [-p] [-a] [-B] [-v] [-V] [word ...]
 
 # DESCRIPTION
 
@@ -65,6 +65,14 @@ Create objects within objects; this works because if the first character of valu
 	 "sunday": false
 	}
 
+Booleans as strings or as boolean (pay particular attention to _switch_; the `-B` option disables the default detection of the "`true`" and "`false`" strings):
+
+	$ jo switch=true morning@0
+	{"switch":true,"morning":false}
+
+	$ jo -B switch=true morning@0
+	{"switch":"true","morning":false}
+
 # OPTIONS
 
 *jo* understands the following options. 
@@ -72,6 +80,10 @@ Create objects within objects; this works because if the first character of valu
 -a
 :   Interpret the list of _words_ as array values and produce an array instead of
     an object.
+
+-B
+:   By default *jo* interprets the strings "`true`" and "`false`" as meaning boolean elements
+    `true` and `false` respectively. Disable with this option.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line output it
