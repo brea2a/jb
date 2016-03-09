@@ -133,13 +133,13 @@ ENVIRONMENT
 
 *jo* attempts to use the following variables from its environment:
 
-JO\_SPACER
-:   When pretty-printing, *jo* uses three spaces by default. Set this
-    variable to any number of spaces or tabs to use instead.
-
 JO\_PRETTY
 :   If this variable is set to any value, *jo* will pretty-print on
     output without having to specify `-p`.
+
+JO\_SPACER
+:   When pretty-printing, *jo* uses three spaces by default. Set this
+    variable to any number of spaces or tabs to use instead.
 
 BUGS
 ====
