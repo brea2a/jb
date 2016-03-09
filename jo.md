@@ -87,6 +87,22 @@ the `-B` option disables the default detection of the "`true`" and
     $ jo -B switch=true morning@0
     {"switch":"true","morning":false}
 
+Elements (objects and arrays) can be nested. The following example nests
+an array called *point* and an object named *geo*:
+
+    $ jo -p name=Jane point[]=1 point[]=2 geo[lat]=10 geo[lon]=20
+    {
+       "name": "Jane",
+       "point": [
+          1,
+          2
+       ],
+       "geo": {
+          "lat": 10,
+          "lon": 20
+       }
+    }
+
 OPTIONS
 =======
 
@@ -142,6 +158,10 @@ Compare the following:
     {"a":1}
     $ jo a=\"1.0\"
     {"a":"1.0"}
+
+Omitting a closing bracket on a nested element causes a diagnostic
+message to print, but the output contains garbage anyway. This was
+designed thusly.
 
 RETURN CODES
 ============

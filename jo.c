@@ -34,6 +34,44 @@
 #define FLAG_ARRAY	0x01
 #define FLAG_PRETTY	0x02
 #define FLAG_NOBOOL	0x04
+#define FLAG_BOOLEAN	0x08
+
+static JsonNode *pile;		/* pile of nested objects/arrays */
+
+int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
+{
+	JsonNode *node;
+
+	if (obj->tag != JSON_OBJECT && obj->tag != JSON_ARRAY)
+		return (FALSE);
+
+	json_foreach(node, object_or_array) {
+		if (!clobber & (json_find_member(obj, node->key) != NULL))
+			continue;	/* Don't clobber existing keys */
+		if (obj->tag == JSON_OBJECT) {
+			if (node->tag == JSON_STRING)
+				json_append_member(obj, node->key, json_mkstring(node->string_));
+			else if (node->tag == JSON_NUMBER)
+				json_append_member(obj, node->key, json_mknumber(node->number_));
+			else if (node->tag == JSON_BOOL)
+				json_append_member(obj, node->key, json_mkbool(node->bool_));
+			else if (node->tag == JSON_NULL)
+				json_append_member(obj, node->key, json_mknull());
+			else
+				fprintf(stderr, "PANIC: unhandled JSON type %d\n", node->tag);
+		} else if (obj->tag == JSON_ARRAY) {
+			if (node->tag == JSON_STRING)
+				json_append_element(obj, json_mkstring(node->string_));
+			if (node->tag == JSON_NUMBER)
+				json_append_element(obj, json_mknumber(node->number_));
+			if (node->tag == JSON_BOOL)
+				json_append_element(obj, json_mkbool(node->bool_));
+			if (node->tag == JSON_NULL)
+				json_append_element(obj, json_mknull());
+		}
+	}
+	return (TRUE);
+}
 
 /*
  * Attempt to "sniff" the type of data in `str' and return
@@ -117,6 +155,66 @@ int usage(char *prog)
 	return (-1);
 }
 
+/*
+ * Check whether we're being given nested arrays or objects.
+ * `kv' contains the "key" such as "number" or "point[]" or
+ * "geo[lat]". `value' the actual value for that element.
+ */
+
+int nested(int flags, char *key, char *value)
+{
+	char *member = NULL, *bo, *bc;		/* bracket open, close */
+	JsonNode *op;
+	int found = FALSE;
+
+	/* Check for geo[] or geo[lat] */
+	if ((bo = strchr(key, '[')) != NULL) {
+		if (*(bo+1) == ']') {
+			*bo = 0;
+		} else if ((bc = strchr(bo + 1, ']')) == NULL) {
+			fprintf(stderr, "missing closing bracket on %s\n", key);
+			return (-1);
+		} else {
+			*bo = *bc = 0;
+			member = bo + 1;
+		}
+
+		/*
+		 * key is now `geo' for both `geo[]` and `geo[lat]`
+		 * member is null for the former and "lat" for the latter.
+		 * Find an existing object in the pile for this member name
+		 * or create a new one if we don't have it.
+		 */
+
+		if ((op = json_find_member(pile, key)) != NULL) {
+			found = TRUE;
+		} else {
+			op = (member == NULL) ? json_mkarray() : json_mkobject();
+		}
+
+		if (member == NULL) {		/* we're doing an array */
+			if (flags & FLAG_BOOLEAN) {
+				json_append_element(op, boolnode(value));
+			} else {
+				json_append_element(op, vnode(value, flags));
+			}
+		} else {			/* we're doing an object */
+			if (flags & FLAG_BOOLEAN) {
+				json_append_member(op, member, boolnode(value));
+			} else {
+				json_append_member(op, member, vnode(value, flags));
+			}
+		}
+
+		if (!found) {
+			json_append_member(pile, key, op);
+		}
+
+		return (TRUE);
+	}
+	return (FALSE);
+}
+
 int member_to_object(JsonNode *object, int flags, char *kv)
 {
 	/* we expect key=value or key:value (boolean on last) */
@@ -127,12 +225,18 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 		return (-1);
 	}
 
+
 	if (p) {
 		*p = 0;
 
+		if (nested(flags, kv, p+1) == TRUE)
+			 return (0);
 		json_append_member(object, kv, vnode(p+1, flags));
 	} else {
 		*q = 0;
+
+		if (nested(flags | FLAG_BOOLEAN, kv, q+1) == TRUE)
+			 return (0);
 		json_append_member(object, kv, boolnode(q+1));
 	}
 	return (0);
@@ -226,6 +330,20 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p)
 #endif
 
+char *stringify(JsonNode *json, int flags)
+{
+	int pretty = flags & FLAG_PRETTY;
+	char *p, *spacer;
+
+	if ((p = getenv("JO_PRETTY")) != NULL)
+		pretty = TRUE;
+
+	if ((spacer = getenv("JO_SPACER")) == NULL)
+		spacer = SPACER;
+
+	return json_stringify(json, (pretty) ? spacer : NULL);
+}
+
 int version(int flags)
 {
 	JsonNode *json = json_mkobject();
@@ -236,7 +354,7 @@ int version(int flags)
 	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
 	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
 
-	if ((js = json_stringify(json, (flags & FLAG_PRETTY) ? SPACER : NULL)) != NULL) {
+	if ((js = stringify(json, flags)) != NULL) {
 		printf("%s\n", js);
 		free(js);
 	}
@@ -250,7 +368,7 @@ int main(int argc, char **argv)
 	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	int flags = 0;
-	JsonNode *json;
+	JsonNode *json, *op;
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
@@ -283,6 +401,7 @@ int main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
+	pile = json_mkobject();
 	json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
 
 	if (argc == 0) {
@@ -301,7 +420,27 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if ((js_string = json_stringify(json, (flags & FLAG_PRETTY) ? SPACER : NULL)) == NULL) {
+	/*
+	 * See if we have any nested objects or arrays in the pile,
+	 * and copy these into our main object if so.
+	 */
+
+	json_foreach(op, pile) {
+		JsonNode *o;
+
+		if (op->tag == JSON_ARRAY) {
+			o = json_mkarray();
+		} else if (op->tag == JSON_OBJECT) {
+			o = json_mkobject();
+		} else {
+			continue;
+		}
+		json_copy_to_object(o, op, 0);
+		json_append_member(json, op->key, o);
+	}
+
+
+	if ((js_string = stringify(json, flags)) == NULL) {
 		fprintf(stderr, "Invalid JSON\n");
 		exit(2);
 	}
@@ -311,5 +450,6 @@ int main(int argc, char **argv)
 	if (ttyout) locale_free(p);
 	free(js_string);
 	json_delete(json);
+	json_delete(pile);
 	return (0);
 }

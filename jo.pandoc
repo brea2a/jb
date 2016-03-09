@@ -73,6 +73,21 @@ Booleans as strings or as boolean (pay particular attention to _switch_; the `-B
 	$ jo -B switch=true morning@0
 	{"switch":"true","morning":false}
 
+Elements (objects and arrays) can be nested. The following example nests an array called _point_ and an object named _geo_:
+
+	$ jo -p name=Jane point[]=1 point[]=2 geo[lat]=10 geo[lon]=20
+	{
+	   "name": "Jane",
+	   "point": [
+	      1,
+	      2
+	   ],
+	   "geo": {
+	      "lat": 10,
+	      "lon": 20
+	   }
+	}
+
 # OPTIONS
 
 *jo* understands the following options. 
@@ -119,6 +134,8 @@ Numeric values are converted to numbers which can produce undesired results. If 
 	{"a":1}
 	$ jo a=\"1.0\"
 	{"a":"1.0"}
+
+Omitting a closing bracket on a nested element causes a diagnostic message to print, but the output contains garbage anyway. This was designed thusly.
 
 # RETURN CODES
 

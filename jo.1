@@ -98,6 +98,27 @@ $\ jo\ \-B\ switch=true\ morning\@0
 {"switch":"true","morning":false}
 \f[]
 .fi
+.PP
+Elements (objects and arrays) can be nested.
+The following example nests an array called \f[I]point\f[] and an object
+named \f[I]geo\f[]:
+.IP
+.nf
+\f[C]
+$\ jo\ \-p\ name=Jane\ point[]=1\ point[]=2\ geo[lat]=10\ geo[lon]=20
+{
+\ \ \ "name":\ "Jane",
+\ \ \ "point":\ [
+\ \ \ \ \ \ 1,
+\ \ \ \ \ \ 2
+\ \ \ ],
+\ \ \ "geo":\ {
+\ \ \ \ \ \ "lat":\ 10,
+\ \ \ \ \ \ "lon":\ 20
+\ \ \ }
+}
+\f[]
+.fi
 .SH OPTIONS
 .PP
 \f[I]jo\f[] understands the following options.
@@ -171,6 +192,10 @@ $\ jo\ a=\\"1.0\\"
 {"a":"1.0"}
 \f[]
 .fi
+.PP
+Omitting a closing bracket on a nested element causes a diagnostic
+message to print, but the output contains garbage anyway.
+This was designed thusly.
 .SH RETURN CODES
 .PP
 \f[I]jo\f[] exits with a code 0 on success and non\-zero on failure
