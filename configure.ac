@@ -24,6 +24,7 @@ if test -z "$PANDOC"
 then
   AC_MSG_WARN([pandoc not found, man pages rebuild will not be possible])
 fi
+AM_CONDITIONAL([USE_PANDOC], [test -n "$PANDOC"])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

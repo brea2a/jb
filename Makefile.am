@@ -7,15 +7,19 @@ jo_EXTRA	= jo.pandoc
 dist_man_MANS	= jo.1
 jo_LDADD	= -lm
 
-#jo.1: jo.pandoc
-#	@test -n "$(PANDOC)" || \
-#	  { echo 'pandoc' not found during configure.; exit 1; }
-#	$(PANDOC) -s -w man jo.pandoc -o $@ $<
+if USE_PANDOC
+# Add targets to rebuild pages
+jo.1: jo.pandoc
+	@test -n "$(PANDOC)" || \
+	  { echo 'pandoc' not found during configure.; exit 1; }
+	$(PANDOC) -s -w man -o $@ $<
 
-#jo.md: jo.pandoc
-#	@test -n "$(PANDOC)" || \
-#	  { echo 'pandoc' not found during configure.; exit 1; }
-#	$(PANDOC) -s -w man jo.pandoc -o $@ $<
+jo.md: jo.pandoc
+	@test -n "$(PANDOC)" || \
+	  { echo 'pandoc' not found during configure.; exit 1; }
+	$(PANDOC) -s -w man -o $@ $<
+
+endif
 
 # docdir		= $(datadir)/doc/@PACKAGE@
 # doc_DATA	= README.md 
