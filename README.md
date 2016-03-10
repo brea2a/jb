@@ -61,3 +61,4 @@ brew install jo
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
 * [ArchLinux](https://aur.archlinux.org/packages/jo/)
+* [OpenBSD](http://openports.se/textproc/jo)
