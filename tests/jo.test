@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# input file (jo.??.in) is a shell script; the first line must
+# be a comment and is used as the name of the test:
+#
+#		# basic logo
+#		$JOBIN -a jo
+#
+# the expect file (jo.??.exp) is a file which will be diff'd
+# against the output of the corresponding .in file:
+#
+#		["jo"]
+#
+
+
+JOBIN="$(pwd)/jo"
+TESTDIR="${0%/*}"
+NTESTS=$(expr $(ls $TESTDIR/*.in 2>/dev/null | wc -l))
+
+export JOBIN
+export TESTDIR
+
+echo "1..$NTESTS" # Number of tests to be executed.
+
+n=0
+for t in $TESTDIR/*.in; do
+	n=$(expr $n + 1)
+	input=$t
+	output="$TESTDIR/$(basename $t .in).out"
+	expected="$TESTDIR/$(basename $t .in).exp"
+
+	title=$(head -1 $input | sed -e 's/^#//')
+	sh $input > $output
+	RC=$?
+	if [ $RC -ne 0 ]; then
+		echo "not ok $n - $title"
+		continue
+	fi
+
+	diff "$output" "$expected" > /dev/null
+	RC=$?
+	status="ok"
+	if [ $RC -ne 0 ]; then
+		status="not ok"
+	fi
+
+	echo "$status $n - $title"
+done
