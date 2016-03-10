@@ -1,0 +1,5 @@
+# nested with executable
+$JOBIN name="Jane Jolie" data="$($JOBIN age= country=ES)"
+
+# the double quotes around data are required for OpenBSD 5.8
+# which mucks up the input with its pdksh otherwise
