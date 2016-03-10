@@ -4,7 +4,7 @@
 # be a comment and is used as the name of the test:
 #
 #		# basic logo
-#		unset JO_PRETTY; $JOBIN -a jo
+#		$JOBIN -a jo
 #
 # the expect file (jo.??.exp) is a file which will be diff'd
 # against the output of the corresponding .in file:

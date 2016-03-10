@@ -1,2 +1,2 @@
 # nested native
-unset JO_PRETTY; $JOBIN a[]=1 a[]=2 geo[lat]=111 geo[lon]=222
+$JOBIN a[]=1 a[]=2 geo[lat]=111 geo[lon]=222

@@ -1,7 +1,3 @@
----
-title: 'JO(1) User Manuals'
-...
-
 NAME
 ====
 
@@ -119,27 +115,13 @@ OPTIONS
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
-    output it prints by default. (See `$JO_PRETTY` and `$JO_SPACER`
-    below.)
+    output it prints by default.
 
 -v
 :   Show version and exit.
 
 -V
 :   Show version as a JSON object and exit.
-
-ENVIRONMENT
-===========
-
-*jo* attempts to use the following variables from its environment:
-
-JO\_PRETTY
-:   If this variable is set to any value, *jo* will pretty-print on
-    output without having to specify `-p`.
-
-JO\_SPACER
-:   When pretty-printing, *jo* uses three spaces by default. Set this
-    variable to any number of spaces or tabs to use instead.
 
 BUGS
 ====
@@ -190,3 +172,4 @@ AUTHOR
 ======
 
 Jan-Piet Mens <http://jpmens.net>
+

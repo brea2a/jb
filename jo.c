@@ -333,15 +333,8 @@ char* locale_from_utf8(const char *utf8, size_t len)
 char *stringify(JsonNode *json, int flags)
 {
 	int pretty = flags & FLAG_PRETTY;
-	char *p, *spacer;
 
-	if ((p = getenv("JO_PRETTY")) != NULL)
-		pretty = TRUE;
-
-	if ((spacer = getenv("JO_SPACER")) == NULL)
-		spacer = SPACER;
-
-	return json_stringify(json, (pretty) ? spacer : NULL);
+	return json_stringify(json, (pretty) ? SPACER : NULL);
 }
 
 int version(int flags)
