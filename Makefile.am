@@ -30,4 +30,9 @@ TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 TESTS		= tests/jo.test
 
 EXTRA_DIST	= $(jo_EXTRA) \
-		  $(TESTS) tests/jo.??.in tests/jo.??.exp
+		  $(TESTS) \
+		  tests/jo.01.in tests/jo.01.exp \
+		  tests/jo.02.in tests/jo.02.exp \
+		  tests/jo.03.in tests/jo.03.exp \
+		  tests/jo.04.in tests/jo.04.exp \
+		  tests/jo.05.in tests/jo.05.exp

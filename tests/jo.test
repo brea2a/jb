@@ -26,14 +26,15 @@ n=0
 for t in $TESTDIR/*.in; do
 	n=$(expr $n + 1)
 	input=$t
-	output="$TESTDIR/$(basename $t .in).out"
 	expected="$TESTDIR/$(basename $t .in).exp"
+	output=$(mktemp /tmp/jo.XXXXXX)
 
 	title=$(head -1 $input | sed -e 's/^#//')
 	sh $input > $output
 	RC=$?
 	if [ $RC -ne 0 ]; then
 		echo "not ok $n - $title"
+		rm -f $output
 		continue
 	fi
 
@@ -45,4 +46,5 @@ for t in $TESTDIR/*.in; do
 	fi
 
 	echo "$status $n - $title"
+	rm -f $output
 done
