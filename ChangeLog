@@ -1,4 +1,9 @@
 
+- UPD: new test suite
+- NEW: support for nested elements (#19)
+- NEW: if $JO_PRETTY is set, jo will always pretty-print
+- NEW: Define $JO_SPACER to any desired number of spaces or tabs for pretty-printing (#18)
+
 2016-03-09 0.7
 - NEW: strings "true"/"false" now default to booleans; avoid with -B (#17)
 - FIX: test.sh get quotes to prevent failures with pdksh (#16)
