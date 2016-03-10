@@ -1,5 +1,5 @@
 
-AM_CFLAGS	= -Wall -O2
+#AM_CFLAGS	= -Wall -O2
 
 bin_PROGRAMS	= jo
 jo_SOURCES	= jo.c json.c json.h
@@ -24,6 +24,10 @@ endif
 # docdir		= $(datadir)/doc/@PACKAGE@
 # doc_DATA	= README.md 
 
-TESTS		= tests.sh
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+                  $(top_srcdir)/build-aux/tap-driver.sh
 
-EXTRA_DIST	= $(TESTS) $(jo_EXTRA)
+TESTS		= tests/jo.test
+
+EXTRA_DIST	= $(jo_EXTRA) \
+		  $(TESTS) tests/jo.??.in tests/jo.??.exp

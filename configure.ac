@@ -1,5 +1,6 @@
 AC_PREREQ([2.69])
-AC_INIT([jo], [0.7], [jpmens@gmail.com])
+AC_INIT([jo], [0.8], [jpmens@gmail.com])
+AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([jo.c])
 
 # Checks for programs.
@@ -13,10 +14,11 @@ AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([strchr strrchr])
+AC_CHECK_FUNCS([strchr strrchr strlcpy strlcat snprintf])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign -Wall])
 AM_SILENT_RULES([yes])
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 AC_ARG_VAR(PANDOC, [pandoc path])
 AC_PATH_PROG(PANDOC, [pandoc], [])
