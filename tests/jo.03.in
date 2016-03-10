@@ -1,2 +1,2 @@
 # basic two values
-$JOBIN pass=true type=text
+unset JO_PRETTY; $JOBIN pass=true type=text

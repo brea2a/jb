@@ -1,2 +1,2 @@
 # basic logo (stdin)
-echo jo | $JOBIN -a
+unset JO_PRETTY; (echo jo |  $JOBIN -a)

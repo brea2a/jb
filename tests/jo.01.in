@@ -1,2 +1,2 @@
 # basic logo
-$JOBIN -a jo
+unset JO_PRETTY; $JOBIN -a jo
