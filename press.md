@@ -17,3 +17,4 @@
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">jo - generate JSON at the command line. <a href="https://t.co/WfnboVl3BB">https://t.co/WfnboVl3BB</a></p>&mdash; One Thing Well (@onethingwell) <a href="https://twitter.com/onethingwell/status/707611961039704068">March 9, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">jo -p artist=&quot;Vanessa Paradis&quot; song=&quot;Joe le taxi&quot; year=1987</p>&mdash; Frederic Cambus (@fcambus) <a href="https://twitter.com/fcambus/status/707860299467120640">March 10, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
