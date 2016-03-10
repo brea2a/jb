@@ -33,8 +33,9 @@ m4/lt~obsolete.m4
 install-sh
 depcomp
 missing
+build-aux/
 
-
+tests/jo.*.out
 jo
 g
 
