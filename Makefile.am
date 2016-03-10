@@ -35,4 +35,5 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.02.in tests/jo.02.exp \
 		  tests/jo.03.in tests/jo.03.exp \
 		  tests/jo.04.in tests/jo.04.exp \
-		  tests/jo.05.in tests/jo.05.exp
+		  tests/jo.05.in tests/jo.05.exp \
+		  tests/jo.06.in tests/jo.06.exp
