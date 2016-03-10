@@ -1,4 +1,5 @@
 
+2016-03-10 0.8
 - UPD: new test suite
 - NEW: support for nested elements (#19)
 - NEW: if $JO_PRETTY is set, jo will always pretty-print
