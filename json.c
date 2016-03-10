@@ -41,7 +41,11 @@ static char *json_strdup(const char *str)
 	char *ret = (char*) malloc(n);
 	if (ret == NULL)
 		out_of_memory();
+#if HAVE_STRLCPY
 	strlcpy(ret, str, n);
+#else
+	strcpy(ret, str);
+#endif
 	return ret;
 }
 
@@ -1170,7 +1174,11 @@ void emit_string(SB *out, const char *str)
 					 */
 					assert(false);
 					if (escape_unicode) {
+#if HAVE_STRLCPY
 						strlcpy(b, "\\uFFFD", out->end - out->start );
+#else
+						strcpy(b, "\\uFFFD");
+#endif
 						b += 6;
 					} else {
 						*b++ = 0xEF;
