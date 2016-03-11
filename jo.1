@@ -87,7 +87,7 @@ $\ jo\ \-p\ name=JP\ object=$(jo\ fruit=Orange\ hungry\@0\ point=$(jo\ x=10\ y=2
 .PP
 Booleans as strings or as boolean (pay particular attention to
 \f[I]switch\f[]; the \f[C]\-B\f[] option disables the default detection
-of the "\f[C]true\f[]" and "\f[C]false\f[]" strings):
+of the "\f[C]true\f[]", "\f[C]false\f[]", and "\f[C]null\f[]" strings):
 .IP
 .nf
 \f[C]
@@ -146,7 +146,7 @@ array instead of an object.
 .B \-B
 By default \f[I]jo\f[] interprets the strings "\f[C]true\f[]" and
 "\f[C]false\f[]" as boolean elements \f[C]true\f[] and \f[C]false\f[]
-respectively.
+respectively, and "\f[C]null\f[]" as \f[C]null\f[].
 Disable with this option.
 .RS
 .RE

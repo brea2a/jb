@@ -139,6 +139,8 @@ JsonNode *vnode(char *str, int flags)
 			return json_mkbool(true);
 		} else if (strcmp(str, "false") == 0) {
 			return json_mkbool(false);
+		} else if (strcmp(str, "null") == 0) {
+			return json_mknull();
 		}
 	}
 

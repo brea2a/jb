@@ -65,7 +65,7 @@ Create objects within objects; this works because if the first character of valu
 	 "sunday": false
 	}
 
-Booleans as strings or as boolean (pay particular attention to _switch_; the `-B` option disables the default detection of the "`true`" and "`false`" strings):
+Booleans as strings or as boolean (pay particular attention to _switch_; the `-B` option disables the default detection of the "`true`", "`false`", and "`null`" strings):
 
 	$ jo switch=true morning@0
 	{"switch":true,"morning":false}
@@ -106,7 +106,7 @@ Read element values from files: a value which starts with `@` is read in plain w
 
 -B
 :   By default *jo* interprets the strings "`true`" and "`false`" as boolean elements
-    `true` and `false` respectively. Disable with this option.
+    `true` and `false` respectively, and "`null`" as `null`. Disable with this option.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line output it

@@ -74,8 +74,8 @@ remainder as JSON. Beware spaces in strings ...
     }
 
 Booleans as strings or as boolean (pay particular attention to *switch*;
-the `-B` option disables the default detection of the "`true`" and
-"`false`" strings):
+the `-B` option disables the default detection of the "`true`",
+"`false`", and "`null`" strings):
 
     $ jo switch=true morning@0
     {"switch":true,"morning":false}
@@ -119,8 +119,8 @@ OPTIONS
 
 -B
 :   By default *jo* interprets the strings "`true`" and "`false`" as
-    boolean elements `true` and `false` respectively. Disable with this
-    option.
+    boolean elements `true` and `false` respectively, and "`null`" as
+    `null`. Disable with this option.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
