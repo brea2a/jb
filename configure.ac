@@ -8,7 +8,7 @@ AC_PROG_CC
 
 # Checks for header files.
 AC_USE_SYSTEM_EXTENSIONS
-AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h unistd.h stdbool.h])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
