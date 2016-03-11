@@ -35,7 +35,7 @@ depcomp
 missing
 build-aux/
 
-tests/jo.*.out
+tests/jo.07.sh
 jo
 g
 

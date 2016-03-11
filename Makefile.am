@@ -36,4 +36,5 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.03.sh tests/jo.03.exp \
 		  tests/jo.04.sh tests/jo.04.exp \
 		  tests/jo.05.sh tests/jo.05.exp \
-		  tests/jo.06.sh tests/jo.06.exp
+		  tests/jo.06.sh tests/jo.06.exp \
+		  tests/jo.07.sh.in

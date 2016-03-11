@@ -28,7 +28,7 @@ then
 fi
 AM_CONDITIONAL([USE_PANDOC], [test -n "$PANDOC"])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile tests/jo.07.sh])
 AC_OUTPUT
 
 echo "

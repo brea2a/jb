@@ -38,8 +38,13 @@ for t in $TESTDIR/jo.??.sh; do
 		continue
 	fi
 
-	diff "$output" "$expected" > /dev/null
-	RC=$?
+	# if self-contained test (i.e. no 'expected' file exists)
+	# use the previous RC
+	if test -f "$expected"; then
+		diff "$output" "$expected" > /dev/null
+		RC=$?
+	fi
+
 	status="ok"
 	if [ $RC -ne 0 ]; then
 		status="not ok"
