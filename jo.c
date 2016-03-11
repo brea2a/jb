@@ -147,11 +147,13 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-p] [-v] [-V] [-B] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-B] [-p] [-v] [-V] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words\n");
 	fprintf(stderr, "\t-B disable boolean true/false\n");
-	fprintf(stderr, "\t-p pretty-prints\n");
+	fprintf(stderr, "\t-p pretty-prints JSON on output\n");
+	fprintf(stderr, "\t-v show version\n");
+	fprintf(stderr, "\t-V show version in JSON\n");
 
 	return (-1);
 }
@@ -372,7 +374,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBpvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBhpvV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
@@ -380,6 +382,9 @@ int main(int argc, char **argv)
 			case 'B':
 				flags |= FLAG_NOBOOL;
 				break;
+			case 'h':
+				usage(progname);
+				return (0);
 			case 'p':
 				flags |= FLAG_PRETTY;
 				break;
