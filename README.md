@@ -5,7 +5,7 @@
 This is `jo`, a small utility to create JSON objects
 
 ```bash
-$ jo -p name=jo n=17 parser@0
+$ jo -p name=jo n=17 parser=false
 {
     "name": "jo",
     "n": 17,
