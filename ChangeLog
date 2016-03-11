@@ -1,4 +1,9 @@
 
+2016-03-11 1.0
+- NEW: read JSON element values from files (#22)
+- FIX: usage diagnostic
+- NEW: add support for OpenBSD pledge(2) (#21)
+
 2016-03-10 0.9
 - UPD: revert support for $JO_PRETTY et. al; it was a bad idea
 
