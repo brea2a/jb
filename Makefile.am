@@ -31,9 +31,9 @@ TESTS		= tests/jo.test
 
 EXTRA_DIST	= $(jo_EXTRA) \
 		  $(TESTS) \
-		  tests/jo.01.in tests/jo.01.exp \
-		  tests/jo.02.in tests/jo.02.exp \
-		  tests/jo.03.in tests/jo.03.exp \
-		  tests/jo.04.in tests/jo.04.exp \
-		  tests/jo.05.in tests/jo.05.exp \
-		  tests/jo.06.in tests/jo.06.exp
+		  tests/jo.01.sh tests/jo.01.exp \
+		  tests/jo.02.sh tests/jo.02.exp \
+		  tests/jo.03.sh tests/jo.03.exp \
+		  tests/jo.04.sh tests/jo.04.exp \
+		  tests/jo.05.sh tests/jo.05.exp \
+		  tests/jo.06.sh tests/jo.06.exp

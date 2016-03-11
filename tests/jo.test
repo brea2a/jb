@@ -4,7 +4,7 @@
 # be a comment and is used as the name of the test:
 #
 #		# basic logo
-#		$JOBIN -a jo
+#		$JO -a jo
 #
 # the expect file (jo.??.exp) is a file which will be diff'd
 # against the output of the corresponding .in file:
@@ -13,20 +13,20 @@
 #
 
 
-JOBIN="$(pwd)/jo"
+JO="$(pwd)/jo"
 TESTDIR="${0%/*}"
-NTESTS=$(expr $(ls $TESTDIR/*.in 2>/dev/null | wc -l))
+NTESTS=$(expr $(ls $TESTDIR/jo.??.sh 2>/dev/null | wc -l))
 
-export JOBIN
+export JO
 export TESTDIR
 
 echo "1..$NTESTS" # Number of tests to be executed.
 
 n=0
-for t in $TESTDIR/*.in; do
+for t in $TESTDIR/jo.??.sh; do
 	n=$(expr $n + 1)
 	input=$t
-	expected="$TESTDIR/$(basename $t .in).exp"
+	expected="$TESTDIR/$(basename $t .sh).exp"
 	output=$(mktemp /tmp/jo.XXXXXX)
 
 	title=$(head -1 $input | sed -e 's/^#//')
