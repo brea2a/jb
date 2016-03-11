@@ -88,6 +88,14 @@ Elements (objects and arrays) can be nested. The following example nests an arra
 	   }
 	}
 
+Read element values from files: a value which starts with `@` is read in plain whereas if it begins with a `%` it will be base64-encoded:
+
+	$ jo program=jo authors=@AUTHORS
+	{"program":"jo","authors":"Jan-Piet Mens <jpmens@gmail.com>"}
+
+	$ jo filename=AUTHORS content=%AUTHORS
+	{"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
+
 # OPTIONS
 
 *jo* understands the following options. 
@@ -97,7 +105,7 @@ Elements (objects and arrays) can be nested. The following example nests an arra
     an object.
 
 -B
-:   By default *jo* interprets the strings "`true`" and "`false`" as meaning boolean elements
+:   By default *jo* interprets the strings "`true`" and "`false`" as boolean elements
     `true` and `false` respectively. Disable with this option.
 
 -p

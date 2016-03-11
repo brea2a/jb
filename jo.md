@@ -99,6 +99,15 @@ an array called *point* and an object named *geo*:
        }
     }
 
+Read element values from files: a value which starts with `@` is read in
+plain whereas if it begins with a `%` it will be base64-encoded:
+
+    $ jo program=jo authors=@AUTHORS
+    {"program":"jo","authors":"Jan-Piet Mens <jpmens@gmail.com>"}
+
+    $ jo filename=AUTHORS content=%AUTHORS
+    {"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
+
 OPTIONS
 =======
 
@@ -110,8 +119,8 @@ OPTIONS
 
 -B
 :   By default *jo* interprets the strings "`true`" and "`false`" as
-    meaning boolean elements `true` and `false` respectively. Disable
-    with this option.
+    boolean elements `true` and `false` respectively. Disable with this
+    option.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line

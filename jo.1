@@ -119,6 +119,20 @@ $\ jo\ \-p\ name=Jane\ point[]=1\ point[]=2\ geo[lat]=10\ geo[lon]=20
 }
 \f[]
 .fi
+.PP
+Read element values from files: a value which starts with \f[C]\@\f[] is
+read in plain whereas if it begins with a \f[C]%\f[] it will be
+base64\-encoded:
+.IP
+.nf
+\f[C]
+$\ jo\ program=jo\ authors=\@AUTHORS
+{"program":"jo","authors":"Jan\-Piet\ Mens\ <jpmens\@gmail.com>"}
+
+$\ jo\ filename=AUTHORS\ content=%AUTHORS
+{"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
+\f[]
+.fi
 .SH OPTIONS
 .PP
 \f[I]jo\f[] understands the following options.
@@ -131,8 +145,8 @@ array instead of an object.
 .TP
 .B \-B
 By default \f[I]jo\f[] interprets the strings "\f[C]true\f[]" and
-"\f[C]false\f[]" as meaning boolean elements \f[C]true\f[] and
-\f[C]false\f[] respectively.
+"\f[C]false\f[]" as boolean elements \f[C]true\f[] and \f[C]false\f[]
+respectively.
 Disable with this option.
 .RS
 .RE

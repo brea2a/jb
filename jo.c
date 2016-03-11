@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <err.h>
 #include "json.h"
+#include "base64.h"
 
 /*
  * Copyright (C) 2016 Jan-Piet Mens <jpmens@gmail.com>
@@ -74,6 +75,33 @@ int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 	return (TRUE);
 }
 
+char *slurp_file(FILE *fp, off_t *len, int fold_newlines)
+{
+	char *buf, *bp;
+	int ch;
+
+	if (fseeko(fp, 0, SEEK_END) != 0) {
+		fclose(fp);
+		return (NULL);
+	}
+	*len = ftello(fp);
+	fseeko(fp, 0, SEEK_SET);
+
+	if ((bp = buf = malloc(*len + 1)) == NULL) {
+		fclose(fp);
+		return (NULL);
+	}
+	while ((ch = fgetc(fp)) != EOF) {
+		if (ch == '\n') {
+			if (!fold_newlines)
+				*bp++ = ch;
+		} else
+			*bp++ = ch;
+	}
+	*bp = 0;
+	return (buf);
+}
+
 /*
  * Attempt to "sniff" the type of data in `str' and return
  * a JsonNode of the correct JSON type.
@@ -81,7 +109,6 @@ int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 
 JsonNode *vnode(char *str, int flags)
 {
-
 	if (strlen(str) == 0) {
 		return json_mknull();
 	}
@@ -109,6 +136,43 @@ JsonNode *vnode(char *str, int flags)
 		} else if (strcmp(str, "false") == 0) {
 			return json_mkbool(false);
 		}
+	}
+
+	if (*str == '@' || *str == '%') {
+		char *filename = str + 1, *content;
+		int binmode = (*str == '%') ? TRUE : FALSE;
+		off_t len = 0;
+		JsonNode *j;
+		FILE *fp;
+
+		if ((fp = fopen(filename, binmode ? "rb" : "r")) == NULL) {
+			errx(1, "Cannot open %s for reading", filename);
+		}
+
+		if ((content = slurp_file(fp, &len, FALSE)) == NULL) {
+			errx(1, "Error reading file %s", filename);
+		}
+
+		fclose(fp);
+
+		if (binmode) {
+			char *encoded;
+
+			if ((encoded = base64_encode(content, len)) == NULL) {
+				errx(1, "Cannot base64-encode file %s", filename);
+			}
+
+			j = json_mkstring(encoded);
+			free(encoded);
+		} else {
+			char *bp = content + strlen(content) - 1;
+
+			if (*bp == '\n') *bp-- = 0;
+			if (*bp == '\r') *bp = 0;
+			j = json_mkstring(content);
+		}
+		free(content);
+		return (j);
 	}
 
 	if (*str == '{' || *str == '[') {
@@ -367,7 +431,7 @@ int main(int argc, char **argv)
 	JsonNode *json, *op;
 
 #if HAVE_PLEDGE
-	if (pledge("stdio", NULL) == -1) {
+	if (pledge("stdio rpath", NULL) == -1) {
 		err(1, "pledge");
 	}
 #endif
