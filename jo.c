@@ -5,6 +5,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <ctype.h>
+#include <err.h>
 #include "json.h"
 
 /*
@@ -362,6 +363,12 @@ int main(int argc, char **argv)
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	int flags = 0;
 	JsonNode *json, *op;
+
+#if HAVE_PLEDGE
+	if (pledge("stdio", NULL) == -1) {
+		err(1, "pledge");
+	}
+#endif
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 

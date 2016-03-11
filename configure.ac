@@ -8,13 +8,13 @@ AC_PROG_CC
 
 # Checks for header files.
 AC_USE_SYSTEM_EXTENSIONS
-AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h])
+AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h unistd.h])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([strchr strrchr strlcpy strlcat snprintf])
+AC_CHECK_FUNCS([strchr strrchr strlcpy strlcat snprintf pledge])
 
 AM_INIT_AUTOMAKE([foreign -Wall])
 AM_SILENT_RULES([yes])
