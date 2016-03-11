@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -29,11 +30,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef TRUE
-# define TRUE 	(1)
-# define FALSE	(0)
-#endif
-
 #define SPACER		"   "
 #define FLAG_ARRAY	0x01
 #define FLAG_PRETTY	0x02
@@ -49,12 +45,12 @@ static JsonNode *pile;		/* pile of nested objects/arrays */
 # define ftello	ftell
 #endif
 
-int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
+void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 {
 	JsonNode *node;
 
 	if (obj->tag != JSON_OBJECT && obj->tag != JSON_ARRAY)
-		return (FALSE);
+		return;
 
 	json_foreach(node, object_or_array) {
 		if (!clobber & (json_find_member(obj, node->key) != NULL))
@@ -81,10 +77,9 @@ int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 				json_append_element(obj, json_mknull());
 		}
 	}
-	return (TRUE);
 }
 
-char *slurp_file(FILE *fp, off_t *len, int fold_newlines)
+char *slurp_file(FILE *fp, off_t *len, bool fold_newlines)
 {
 	char *buf, *bp;
 	int ch;
@@ -149,7 +144,7 @@ JsonNode *vnode(char *str, int flags)
 
 	if (*str == '@' || *str == '%') {
 		char *filename = str + 1, *content;
-		int binmode = (*str == '%') ? TRUE : FALSE;
+		bool binmode = (*str == '%');
 		off_t len = 0;
 		JsonNode *j;
 		FILE *fp;
@@ -158,7 +153,7 @@ JsonNode *vnode(char *str, int flags)
 			errx(1, "Cannot open %s for reading", filename);
 		}
 
-		if ((content = slurp_file(fp, &len, FALSE)) == NULL) {
+		if ((content = slurp_file(fp, &len, false)) == NULL) {
 			errx(1, "Error reading file %s", filename);
 		}
 
@@ -237,11 +232,11 @@ int usage(char *prog)
  * "geo[lat]". `value' the actual value for that element.
  */
 
-int nested(int flags, char *key, char *value)
+bool nested(int flags, char *key, char *value)
 {
 	char *member = NULL, *bo, *bc;		/* bracket open, close */
 	JsonNode *op;
-	int found = FALSE;
+	int found = false;
 
 	/* Check for geo[] or geo[lat] */
 	if ((bo = strchr(key, '[')) != NULL) {
@@ -263,7 +258,7 @@ int nested(int flags, char *key, char *value)
 		 */
 
 		if ((op = json_find_member(pile, key)) != NULL) {
-			found = TRUE;
+			found = true;
 		} else {
 			op = (member == NULL) ? json_mkarray() : json_mkobject();
 		}
@@ -286,9 +281,9 @@ int nested(int flags, char *key, char *value)
 			json_append_member(pile, key, op);
 		}
 
-		return (TRUE);
+		return (true);
 	}
-	return (FALSE);
+	return (false);
 }
 
 int member_to_object(JsonNode *object, int flags, char *kv)
@@ -305,13 +300,13 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 	if (p) {
 		*p = 0;
 
-		if (nested(flags, kv, p+1) == TRUE)
+		if (nested(flags, kv, p+1))
 			 return (0);
 		json_append_member(object, kv, vnode(p+1, flags));
 	} else {
 		*q = 0;
 
-		if (nested(flags | FLAG_BOOLEAN, kv, q+1) == TRUE)
+		if (nested(flags | FLAG_BOOLEAN, kv, q+1))
 			 return (0);
 		json_append_member(object, kv, boolnode(q+1));
 	}
@@ -433,7 +428,8 @@ int version(int flags)
 
 int main(int argc, char **argv)
 {
-	int c, showversion = FALSE;
+	int c;
+	bool showversion = false;
 	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	int flags = 0;
@@ -465,7 +461,7 @@ int main(int argc, char **argv)
 				printf("jo %s\n", PACKAGE_VERSION);
 				exit(0);
 			case 'V':
-				showversion = TRUE;
+				showversion = true;
 				break;
 			default:
 				exit(usage(progname));
