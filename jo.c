@@ -5,7 +5,9 @@
 #include <string.h>
 #include <getopt.h>
 #include <ctype.h>
-#include <err.h>
+#ifndef WIN32
+# include <err.h>
+#endif
 #include "json.h"
 #include "base64.h"
 
@@ -39,6 +41,13 @@
 #define FLAG_BOOLEAN	0x08
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
+
+#ifdef _WIN32
+# define err(n, s)	{ fprintf(stderr, s); exit(n); }
+# define errx(n, f, a)	{ fprintf(stderr, f, a); exit(n); }
+# define fseeko	fseek
+# define ftello	ftell
+#endif
 
 int json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 {
