@@ -33,6 +33,7 @@ m4/lt~obsolete.m4
 install-sh
 depcomp
 missing
+build-aux/compile
 build-aux/depcomp
 build-aux/install-sh
 build-aux/missing
