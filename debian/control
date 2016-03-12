@@ -1,0 +1,10 @@
+Source: jo
+Section: devel
+Priority: optional
+Maintainer: Jan-Piet Mens <jpmens@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), dh-autoreconf, libtool, autoconf (>= 2.69), make
+Standards-Version: 3.9.3
+
+Package: jo
+Architecture: any
+Description: A shell command to create JSON
