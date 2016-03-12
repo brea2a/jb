@@ -12,6 +12,7 @@ before_install:
  - echo $LANG
  - echo $LC_ALL
 before_script:
+ - autoreconf -i
  - ./configure
 script:
  - make
