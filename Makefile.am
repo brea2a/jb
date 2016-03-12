@@ -24,6 +24,12 @@ endif
 # docdir		= $(datadir)/doc/@PACKAGE@
 # doc_DATA	= README.md 
 
+# If on OS/X, fail if $COPYFILE_DISABLE is not in the environment
+# so that tar doesn't bundle the AppleDouble attributes
+
+dist-hook:
+	if test $$(uname -s) = "Darwin" -a "x$$COPYFILE_DISABLE" = "x"; then echo "Set COPYFILE_DISABLE before making dist" >&2; exit 2; fi 
+
 TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
                   $(top_srcdir)/build-aux/tap-driver.sh
 
@@ -39,4 +45,8 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.06.sh tests/jo.06.exp \
 		  tests/jo.07.sh.in \
 		  tests/jo.08.sh tests/jo.08.exp \
-		  tests/jo.09.sh tests/jo.09.exp
+		  tests/jo.09.sh tests/jo.09.exp \
+		  tests/jo.10.sh tests/jo.10.exp \
+		  tests/jo.11.sh tests/jo.11.exp \
+		  tests/jo.12.sh tests/jo.12.exp \
+		  tests/jo.13.sh tests/jo.13.exp tests/jo-logo.png
