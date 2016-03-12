@@ -57,8 +57,7 @@ make install
 To install with Homebrew, use [the tap](https://github.com/caius/homebrew-jo).
 
 ```bash
-brew tap caius/jo
-brew install jo
+brew install caius/jo/jo
 ```
 
 ## Others
