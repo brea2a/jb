@@ -24,6 +24,8 @@ It has a [manual](jo.md), and you can read [why I wrote jo](http://jpmens.net/20
 
 ## Build from Github
 
+[![Build Status](https://api.travis-ci.org/jpmens/jo.svg?branch=master)](https://travis-ci.org/jpmens/jo)
+
 To install from the repository, you will need a C compiler as well as a relatively recent version of _automake_ and _autoconf_.
 
 ```bash
