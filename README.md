@@ -1,6 +1,6 @@
 # jo
 
-![jo logo](jo-logo.png)
+![jo logo](tests/jo-logo.png)
 
 This is `jo`, a small utility to create JSON objects
 
