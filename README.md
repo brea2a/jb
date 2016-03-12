@@ -60,6 +60,16 @@ To install with Homebrew, use [the tap](https://github.com/caius/homebrew-jo).
 brew install caius/jo/jo
 ```
 
+## Ubuntu
+
+To install on Ubuntu, use [this PPA](https://launchpad.net/~duggan/+archive/ubuntu/jo):
+
+```
+apt-add-repository ppa:duggan/jo --yes
+apt-get update -q
+apt-get install jo
+```
+
 ## Others
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
