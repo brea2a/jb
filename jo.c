@@ -79,30 +79,29 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 	}
 }
 
-char *slurp_file(FILE *fp, off_t *len, bool fold_newlines)
+char *slurp_file(FILE *fp, size_t *out_len, bool fold_newlines)
 {
 	char *buf, *bp;
 	int ch;
+	off_t file_len;
 
 	if (fseeko(fp, 0, SEEK_END) != 0) {
 		fclose(fp);
 		return (NULL);
 	}
-	*len = ftello(fp);
+	file_len = ftello(fp);
 	fseeko(fp, 0, SEEK_SET);
 
-	if ((bp = buf = malloc(*len + 1)) == NULL) {
+	if ((bp = buf = malloc(file_len + 1)) == NULL) {
 		fclose(fp);
 		return (NULL);
 	}
 	while ((ch = fgetc(fp)) != EOF) {
-		if (ch == '\n') {
-			if (!fold_newlines)
-				*bp++ = ch;
-		} else
+		if (ch != '\n' || !fold_newlines)
 			*bp++ = ch;
 	}
 	*bp = 0;
+	*out_len = bp - buf;
 	return (buf);
 }
 
@@ -147,7 +146,7 @@ JsonNode *vnode(char *str, int flags)
 	if (*str == '@' || *str == '%') {
 		char *filename = str + 1, *content;
 		bool binmode = (*str == '%');
-		off_t len = 0;
+		size_t len = 0;
 		JsonNode *j;
 		FILE *fp;
 
