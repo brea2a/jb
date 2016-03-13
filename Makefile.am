@@ -49,4 +49,5 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.10.sh tests/jo.10.exp \
 		  tests/jo.11.sh tests/jo.11.exp \
 		  tests/jo.12.sh tests/jo.12.exp \
-		  tests/jo.13.sh tests/jo.13.exp tests/jo-logo.png
+		  tests/jo.13.sh tests/jo.13.exp tests/jo-logo.png \
+		  tests/jo.14.sh tests/jo.14.exp 
