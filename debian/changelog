@@ -1,0 +1,5 @@
+jo (1.0) trusty; urgency=low
+
+  * Initial packaging for jo
+
+ -- Ross Duggan <ross@duggan.ie>  Sat, 12 Mar 2016 18:30:00 +0100
