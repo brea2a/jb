@@ -175,6 +175,7 @@ SEE ALSO
 
 -   <https://stedolan.github.io/jq/>
 -   <https://github.com/micha/jsawk>
+-   <https://github.com/jtopjian/jsed>
 -   strtod(3)
 
 AUTHOR
