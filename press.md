@@ -4,6 +4,7 @@
 * [Lobsters](https://lobste.rs/s/tyehi1/a_shell_command_to_create_json_jo)
 * [reddit](https://www.reddit.com/r/programming/comments/49sx6x/a_shell_command_to_create_json_jo)
 * [Hacker News](https://news.ycombinator.com/item?id=11272678)
+* [Trivium](http://chneukirchen.org/trivium/2016-05-13)
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Didn&#39;t realize I was only half a man while living without it!!!<br><br> <a href="https://t.co/gSsbJtvjDW">https://t.co/gSsbJtvjDW</a></p>&mdash; Andy Fuchs (@tiptronic) <a href="https://twitter.com/tiptronic/status/705747046079340544">March 4, 2016</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
