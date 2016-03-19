@@ -24,7 +24,7 @@ It has a [manual](jo.md), and you can read [why I wrote jo](http://jpmens.net/20
 
 ## Build from Release tarball
 
-To build from [a release](https://github.com/jpmens/jo/releases) you will need a C compiler to install from a source tarball.
+To build from [a release](https://github.com/jpmens/jo/releases) you will need a C compiler to install from a source tarball which you download from the [Releases page](https://github.com/jpmens/jo/releases).
 
 ```bash
 tar xvzf jo-1.0.tar.gz
