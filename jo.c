@@ -292,6 +292,32 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 	/* we expect key=value or key:value (boolean on last) */
 	char *p = strchr(kv, '=');
 	char *q = strchr(kv, '@');
+	char *r = strchr(kv, ':');
+
+	if (r && p && !q) {
+		FILE *fp;
+		char *filename = p + 1;
+		char *content;
+		size_t len;
+
+		if ((fp = fopen(filename, "r")) == NULL) {
+			errx(1, "Cannot open %s for reading", filename);
+		}
+		if ((content = slurp_file(fp, &len, false)) == NULL) {
+			errx(1, "Error reading file %s", filename);
+		}
+
+		JsonNode *o = json_decode(content);
+		free(content);
+
+		if (o == NULL) {
+			errx(1, "Cannot decode JSON in file %s", filename);
+		}
+
+		*r = 0;		/* Chop at ":=" */
+		json_append_member(object, kv, o);
+		return (0);
+	}
 
 	if (!p && !q) {
 		return (-1);

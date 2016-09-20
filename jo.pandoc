@@ -21,6 +21,8 @@ empty value behind the colon results in a `null` JSON element.
 
 *jo* creates an array instead of an object when `-a` is specified.
 
+When the `:=` operator is used in a _word_, the name to the right of `:=` is a file containing JSON which is parsed and assigned to the key left of the operator.
+
 # EXAMPLES
 
 Create an object. Note how the incorrectly-formatted float value becomes a string:
@@ -95,6 +97,12 @@ Read element values from files: a value which starts with `@` is read in plain w
 
 	$ jo filename=AUTHORS content=%AUTHORS
 	{"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
+
+Read element values from a file in order to overcome ARG_MAX limits during object assignment:
+
+	$ ls | jo -a > child.json
+	$ jo files:=child.json
+	{"files":["AUTHORS","COPYING","ChangeLog" ....
 
 # OPTIONS
 
