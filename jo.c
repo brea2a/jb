@@ -294,7 +294,7 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 	char *q = strchr(kv, '@');
 	char *r = strchr(kv, ':');
 
-	if (r && p && !q) {
+	if ((r && *(r+1) == '=') && !q) {
 		FILE *fp;
 		char *filename = p + 1;
 		char *content;
@@ -309,6 +309,7 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 
 		JsonNode *o = json_decode(content);
 		free(content);
+		fclose(fp);
 
 		if (o == NULL) {
 			errx(1, "Cannot decode JSON in file %s", filename);
@@ -319,7 +320,7 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 		return (0);
 	}
 
-	if (!p && !q) {
+	if (!p && !q && !r) {
 		return (-1);
 	}
 
