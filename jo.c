@@ -326,17 +326,21 @@ int member_to_object(JsonNode *object, int flags, char *kv)
 
 
 	if (p) {
-		*p = 0;
+		if (p) {
+			*p = 0;
 
-		if (nested(flags, kv, p+1))
-			 return (0);
-		json_append_member(object, kv, vnode(p+1, flags));
+			if (nested(flags, kv, p+1))
+				 return (0);
+			json_append_member(object, kv, vnode(p+1, flags));
+		}
 	} else {
-		*q = 0;
+		if (q) {
+			*q = 0;
 
-		if (nested(flags | FLAG_BOOLEAN, kv, q+1))
-			 return (0);
-		json_append_member(object, kv, boolnode(q+1));
+			if (nested(flags | FLAG_BOOLEAN, kv, q+1))
+				 return (0);
+			json_append_member(object, kv, boolnode(q+1));
+		}
 	}
 	return (0);
 }
