@@ -119,11 +119,14 @@ JsonNode *vnode(char *str, int flags)
 	/* If str begins with a double quote, keep it a string */
 
 	if (*str == '"') {
+#if 0
 		char *bp = str + strlen(str) - 1;
 
 		if (bp > str && *bp == '"')
 			*bp = 0;		/* Chop closing double quote */
 		return json_mkstring(str + 1);
+#endif
+		return json_mkstring(str);
 	}
 
 	char *endptr;
