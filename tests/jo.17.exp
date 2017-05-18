@@ -1,0 +1,12 @@
+{"s":"","n":0,"b":false,"a":null}
+{"s":"string","n":6,"b":true,"a":"string"}
+{"s":"\"quoted\"","n":8,"b":true,"a":"\"quoted\""}
+{"s":"12345","n":12345,"b":true,"a":12345}
+{"s":"true","n":1,"b":true,"a":true}
+{"s":"false","n":0,"b":false,"a":false}
+{"s":"","n":0,"b":false,"a":null}
+["123",14,true,456]
+{"s":false,"n":false,"b":false,"a":false}
+{"s":true,"n":true,"b":true,"a":true}
+{"s":"Jan-Piet Mens <jpmens@gmail.com>","n":"Jan-Piet Mens <jpmens@gmail.com>","b":"Jan-Piet Mens <jpmens@gmail.com>","a":"Jan-Piet Mens <jpmens@gmail.com>"}
+{"s":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K","n":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K","b":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K","a":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}

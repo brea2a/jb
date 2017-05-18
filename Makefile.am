@@ -12,12 +12,12 @@ if USE_PANDOC
 jo.1: jo.pandoc
 	@test -n "$(PANDOC)" || \
 	  { echo 'pandoc' not found during configure.; exit 1; }
-	$(PANDOC) -s -w man -o $@ $<
+	$(PANDOC) -s -w man+simple_tables -o $@ $<
 
 jo.md: jo.pandoc
 	@test -n "$(PANDOC)" || \
 	  { echo 'pandoc' not found during configure.; exit 1; }
-	$(PANDOC) -s -w markdown -o $@ $<
+	$(PANDOC) -s -w markdown+simple_tables -o $@ $<
 
 endif
 
