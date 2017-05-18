@@ -1,3 +1,7 @@
+---
+title: 'JO(1) User Manuals'
+---
+
 NAME
 ====
 
@@ -6,12 +10,12 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo [-p] [-a] [-B] [-v] [-V] [word ...]
+jo \[-p\] \[-a\] \[-B\] \[-v\] \[-V\] \[--\] \[ \[-s|-n|-b\] word ...\]
 
 DESCRIPTION
 ===========
 
-*jo* creates a JSON string on *stdout* from *word*s given it as
+*jo* creates a JSON string on *stdout* from \_word\_s given it as
 arguments or read from *stdin*. Without option `-a` it generates an
 object whereby each *word* is a `key=value` (or `key@value`) pair with
 *key* being the JSON object element and *value* its value. *jo* attempts
@@ -24,6 +28,39 @@ the result is `true`, else `false`. A missing or empty value behind the
 colon results in a `null` JSON element.
 
 *jo* creates an array instead of an object when `-a` is specified.
+
+When the `:=` operator is used in a *word*, the name to the right of
+`:=` is a file containing JSON which is parsed and assigned to the key
+left of the operator.
+
+TYPE COERCION
+=============
+
+*jo*'s type guesses can be overridden on a per-word basis by prefixing
+*word* with `-s` for *string*, `-n` for *number*, or `-b` for *boolean*.
+The list of \_word\_s *must* be prefixed with `--`, to indicate to *jo*
+that there are no more global options.
+
+Type coercion works as follows:
+
+  word         -s               -n          -b          default
+  ------------ ---------------- ----------- ----------- ----------------
+  a=           "a":""           "a":0       "a":false   "a":null
+  a=string     "a":"string"     "a":6       "a":true    "a":"string"
+  a="quoted"   "a":""quoted""   "a":8       "a":true    "a":""quoted""
+  a=12345      "a":"12345"      "a":12345   "a":true    "a":12345
+  a=true       "a":"true"       "a":1       "a":true    "a":true
+  a=false      "a":"false"      "a":0       "a":false   "a":false
+  a=null       "a":""           "a":0       "a":false   "a":null
+
+Coercing a non-number string to number outputs the *length* of the
+string.
+
+Coercing a non-boolean string to boolean outputs `false` if the string
+is empty, `true` otherwise.
+
+Type coercion only applies to `key=value` words, and individual words in
+a `-a` array. Coercing other words has no effect.
 
 EXAMPLES
 ========
@@ -99,6 +136,23 @@ an array called *point* and an object named *geo*:
        }
     }
 
+Type coercion:
+
+    $ jo -p -- -s a=true b=true -s c=123 d=123 -b e="1" -b f="true" -n g="This is a test" -b h="This is a test"
+    {
+       "a": "true",
+       "b": true,
+       "c": "123",
+       "d": 123,
+       "e": true,
+       "f": true,
+       "g": 14,
+       "h": true
+    }
+
+    $ jo -a -- -s 123 -n "This is a test" -b C_Rocks 456
+    ["123",14,true,456]
+
 Read element values from files: a value which starts with `@` is read in
 plain whereas if it begins with a `%` it will be base64-encoded:
 
@@ -108,10 +162,17 @@ plain whereas if it begins with a `%` it will be base64-encoded:
     $ jo filename=AUTHORS content=%AUTHORS
     {"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
 
+Read element values from a file in order to overcome ARG\_MAX limits
+during object assignment:
+
+    $ ls | jo -a > child.json
+    $ jo files:=child.json
+    {"files":["AUTHORS","COPYING","ChangeLog" ....
+
 OPTIONS
 =======
 
-*jo* understands the following options.
+*jo* understands the following global options.
 
 -a
 :   Interpret the list of *words* as array values and produce an array
@@ -182,4 +243,3 @@ AUTHOR
 ======
 
 Jan-Piet Mens <http://jpmens.net>
-

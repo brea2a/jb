@@ -6,7 +6,7 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] [-B] [-v] [-V] [word ...]
+jo [-p] [-a] [-B] [-v] [-V] [--] [ [-s|-n|-b] word ...]
 
 # DESCRIPTION
 
@@ -22,6 +22,31 @@ empty value behind the colon results in a `null` JSON element.
 *jo* creates an array instead of an object when `-a` is specified.
 
 When the `:=` operator is used in a _word_, the name to the right of `:=` is a file containing JSON which is parsed and assigned to the key left of the operator.
+
+# TYPE COERCION
+
+*jo*'s type guesses can be overridden on a per-word basis by prefixing _word_ with `-s` for _string_,
+`-n` for _number_, or `-b` for _boolean_. The list of _word_s *must* be prefixed with `--`, to indicate
+to *jo* that there are no more global options.
+
+Type coercion works as follows:
+
+word         -s               -n           -b        default
+------------ ---------------- ------------ --------- ----------------
+a=           "a":""           "a":0        "a":false "a":null
+a=string     "a":"string"     "a":6        "a":true  "a":"string"
+a=\"quoted\" "a":"\"quoted\"" "a":8        "a":true  "a":"\"quoted\""
+a=12345      "a":"12345"      "a":12345    "a":true  "a":12345
+a=true       "a":"true"       "a":1        "a":true  "a":true
+a=false      "a":"false"      "a":0        "a":false "a":false
+a=null       "a":""           "a":0        "a":false "a":null
+
+Coercing a non-number string to number outputs the _length_ of the string.
+
+Coercing a non-boolean string to boolean outputs `false` if the string is empty, `true` otherwise.
+
+Type coercion only applies to `key=value` words, and individual words in a `-a` array.
+Coercing other words has no effect.
 
 # EXAMPLES
 
@@ -90,6 +115,23 @@ Elements (objects and arrays) can be nested. The following example nests an arra
 	   }
 	}
 
+Type coercion:
+
+	$ jo -p -- -s a=true b=true -s c=123 d=123 -b e="1" -b f="true" -n g="This is a test" -b h="This is a test"
+	{
+	   "a": "true",
+	   "b": true,
+	   "c": "123",
+	   "d": 123,
+	   "e": true,
+	   "f": true,
+	   "g": 14,
+	   "h": true
+	}
+
+	$ jo -a -- -s 123 -n "This is a test" -b C_Rocks 456
+	["123",14,true,456]
+
 Read element values from files: a value which starts with `@` is read in plain whereas if it begins with a `%` it will be base64-encoded:
 
 	$ jo program=jo authors=@AUTHORS
@@ -106,7 +148,7 @@ Read element values from a file in order to overcome ARG_MAX limits during objec
 
 # OPTIONS
 
-*jo* understands the following options. 
+*jo* understands the following global options. 
 
 -a
 :   Interpret the list of _words_ as array values and produce an array instead of

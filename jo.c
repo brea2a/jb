@@ -35,6 +35,7 @@
 #define FLAG_PRETTY	0x02
 #define FLAG_NOBOOL	0x04
 #define FLAG_BOOLEAN	0x08
+#define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN)
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
 
@@ -44,6 +45,14 @@ static JsonNode *pile;		/* pile of nested objects/arrays */
 # define fseeko	fseek
 # define ftello	ftell
 #endif
+
+JsonTag flags_to_tag(int flags) {
+	return flags / (FLAG_MASK + 1);
+}
+
+int tag_to_flags(JsonTag tag) {
+	return (FLAG_MASK + 1) * tag;
+}
 
 void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
 {
@@ -105,6 +114,72 @@ char *slurp_file(FILE *fp, size_t *out_len, bool fold_newlines)
 	return (buf);
 }
 
+JsonNode *jo_mknull(JsonTag type) {
+	switch (type) {
+		case JSON_STRING:
+			return json_mkstring("");
+			break;
+		case JSON_NUMBER:
+			return json_mknumber(0);
+			break;
+		case JSON_BOOL:
+			return json_mkbool(false);
+			break;
+		default:
+			return json_mknull();
+			break;
+	}
+}
+
+JsonNode *jo_mkbool(bool b, JsonTag type) {
+	switch (type) {
+		case JSON_STRING:
+			return json_mkstring(b ? "true" : "false");
+			break;
+		case JSON_NUMBER:
+			return json_mknumber(b ? 1 : 0);
+			break;
+		default:
+			return json_mkbool(b);
+			break;
+	}
+}
+
+JsonNode *jo_mkstring(char *str, JsonTag type) {
+	switch (type) {
+		case JSON_NUMBER:
+			/* Length of string */
+			return json_mknumber(strlen(str));
+			break;
+		case JSON_BOOL:
+			/* True if not empty */
+			return json_mkbool(strlen(str) > 0);
+			break;
+		default:
+			return json_mkstring(str);
+			break;
+	}
+}
+
+JsonNode *jo_mknumber(char *str, JsonTag type) {
+	/* ASSUMPTION: str already tested as valid number */
+	double n = strtod(str, NULL);
+
+	switch (type) {
+		case JSON_STRING:
+			/* Just return the original representation */
+			return json_mkstring(str);
+			break;
+		case JSON_BOOL:
+			return json_mkbool(n != 0);
+			break;
+		default:
+			/* ASSUMPTION: str already tested as valid number */
+			return json_mknumber(n);
+			break;
+	}
+}
+
 /*
  * Attempt to "sniff" the type of data in `str' and return
  * a JsonNode of the correct JSON type.
@@ -112,8 +187,10 @@ char *slurp_file(FILE *fp, size_t *out_len, bool fold_newlines)
 
 JsonNode *vnode(char *str, int flags)
 {
+	JsonTag type = flags_to_tag(flags);
+
 	if (strlen(str) == 0) {
-		return json_mknull();
+		return jo_mknull(type);
 	}
 
 	/* If str begins with a double quote, keep it a string */
@@ -126,23 +203,23 @@ JsonNode *vnode(char *str, int flags)
 			*bp = 0;		/* Chop closing double quote */
 		return json_mkstring(str + 1);
 #endif
-		return json_mkstring(str);
+		return jo_mkstring(str, type);
 	}
 
 	char *endptr;
 	double num = strtod(str, &endptr);
 
 	if (!*endptr && isfinite(num)) {
-		return json_mknumber(num);
+		return jo_mknumber(str, type);
 	}
 
 	if (!(flags & FLAG_NOBOOL)) {
 		if (strcmp(str, "true") == 0) {
-			return json_mkbool(true);
+			return jo_mkbool(true, type);
 		} else if (strcmp(str, "false") == 0) {
-			return json_mkbool(false);
+			return jo_mkbool(false, type);
 		} else if (strcmp(str, "null") == 0) {
-			return json_mknull();
+			return jo_mknull(type);
 		}
 	}
 
@@ -196,7 +273,7 @@ JsonNode *vnode(char *str, int flags)
 		return (obj);
 	}
 
-	return json_mkstring(str);
+	return jo_mkstring(str, type);
 }
 
 /*
@@ -523,9 +600,28 @@ int main(int argc, char **argv)
 		}
 	} else {
 		while ((kv = *argv++)) {
-			p = utf8_from_locale(kv, -1);
-			append_kv(json, flags, p);
-			utf8_free(p);
+			if (kv[0] == '-') {
+				/* Set one-shot coerce flag */
+				switch (kv[1]) {
+					case 'b':
+						flags |= tag_to_flags(JSON_BOOL);
+						break;
+					case 's':
+						flags |= tag_to_flags(JSON_STRING);
+						break;
+					case 'n':
+						flags |= tag_to_flags(JSON_NUMBER);
+						break;
+					default:
+						exit(usage(progname));
+				}
+			} else {
+				p = utf8_from_locale(kv, -1);
+				append_kv(json, flags, p);
+				utf8_free(p);
+				/* Reset any one-shot coerce flags */
+				flags &= FLAG_MASK;
+			}
 		}
 	}
 
