@@ -1,5 +1,5 @@
 Name:           jo
-Version:        1.0
+Version:        1.1
 Release:        1%{?dist}
 Summary:        jo is a small utility to create JSON objects
 
@@ -34,5 +34,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 18 2017 Fabian Arrotin <fabian.arrotin@arrfab.net> 1.1-1
+- Bumped to 1.1 release version
 * Wed Mar 15 2017 Fabian Arrotin <fabian.arrotin@arrfab.net> 1.0-1
 - initial spec
