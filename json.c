@@ -1114,7 +1114,7 @@ void emit_string(SB *out, const char *str)
 	const char *s = str;
 	char *b;
 	
-	assert(utf8_validate(str));
+	//JPM assert(utf8_validate(str));
 	
 	/*
 	 * 14 bytes is enough space to write up to two
@@ -1172,7 +1172,7 @@ void emit_string(SB *out, const char *str)
 					 * This should never happen when assertions are enabled
 					 * due to the assertion at the beginning of this function.
 					 */
-					assert(false);
+					//JPM assert(false);
 					if (escape_unicode) {
 #if HAVE_STRLCPY
 						strlcpy(b, "\\uFFFD", out->end - out->start );
