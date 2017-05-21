@@ -74,3 +74,7 @@ apt-get install jo
 * [ArchLinux](https://aur.archlinux.org/packages/jo/)
 * [OpenBSD](http://openports.se/textproc/jo)
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
+
+## Credits
+
+* `json.[ch]` by 2011 Joseph A. Adams (joeyadams3.14159@gmail.com). Note that `json.c` has two `assert()` commented out in `emit_string()` as per Joey's suggestion in [#53](https://github.com/jpmens/jo/issues/53#issuecomment-302954620).
