@@ -1,6 +1,6 @@
 ---
 title: 'JO(1) User Manuals'
----
+...
 
 NAME
 ====
@@ -10,7 +10,8 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo \[-p\] \[-a\] \[-B\] \[-v\] \[-V\] \[--\] \[ \[-s|-n|-b\] word ...\]
+jo \[-p\] \[-a\] \[-B\] \[-v\] \[-V\] \[-d keydelim\] \[--\] \[
+\[-s|-n|-b\] word ...\]
 
 DESCRIPTION
 ===========
@@ -21,6 +22,11 @@ object whereby each *word* is a `key=value` (or `key@value`) pair with
 *key* being the JSON object element and *value* its value. *jo* attempts
 to guess the type of *value* in order to create number (using
 *strtod(3)*), string, or null values in JSON.
+
+*jo* normally treats *key* as a literal string value. If the `-d` option
+is specified, *key* will be interpreted as an *object path*, whose
+individual components are separated by the first character of
+*keydelim*.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the
 value begins with `T`, `t`, or the numeric value is greater than zero,
@@ -134,6 +140,34 @@ an array called *point* and an object named *geo*:
           "lat": 10,
           "lon": 20
        }
+    }
+
+The same example, using object paths:
+
+    $ jo -p -d. name=Jane point[]=1 point[]=2 geo.lat=10 geo.lon=20
+    {
+       "name": "Jane",
+       "point": [
+          1,
+          2
+       ],
+       "geo": {
+          "lat": 10,
+          "lon": 20
+       }
+    }
+
+Without `-d`, a different object is generated:
+
+    $ jo -p name=Jane point[]=1 point[]=2 geo.lat=10 geo.lon=20
+    {
+       "name": "Jane",
+       "point": [
+          1,
+          2
+       ],
+       "geo.lat": 10,
+       "geo.lon": 20
     }
 
 Type coercion:
