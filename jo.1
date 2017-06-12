@@ -8,7 +8,8 @@
 jo \- JSON output from a shell
 .SH SYNOPSIS
 .PP
-jo [\-p] [\-a] [\-B] [\-v] [\-V] [\-\-] [ [\-s|\-n|\-b] word ...]
+jo [\-p] [\-a] [\-B] [\-v] [\-V] [\-d keydelim] [\-\-] [ [\-s|\-n|\-b]
+word ...]
 .SH DESCRIPTION
 .PP
 \f[I]jo\f[] creates a JSON string on \f[I]stdout\f[] from _word_s given
@@ -19,6 +20,11 @@ Without option \f[C]\-a\f[] it generates an object whereby each
 \f[I]jo\f[] attempts to guess the type of \f[I]value\f[] in order to
 create number (using \f[I]strtod(3)\f[]), string, or null values in
 JSON.
+.PP
+\f[I]jo\f[] normally treats \f[I]key\f[] as a literal string value.
+If the \f[C]\-d\f[] option is specified, \f[I]key\f[] will be
+interpreted as an \f[I]object path\f[], whose individual components are
+separated by the first character of \f[I]keydelim\f[].
 .PP
 \f[I]jo\f[] treats \f[C]key\@value\f[] specifically as boolean JSON
 elements: if the value begins with \f[C]T\f[], \f[C]t\f[], or the
@@ -237,6 +243,42 @@ $\ jo\ \-p\ name=Jane\ point[]=1\ point[]=2\ geo[lat]=10\ geo[lon]=20
 \ \ \ \ \ \ "lat":\ 10,
 \ \ \ \ \ \ "lon":\ 20
 \ \ \ }
+}
+\f[]
+.fi
+.PP
+The same example, using object paths:
+.IP
+.nf
+\f[C]
+$\ jo\ \-p\ \-d.\ name=Jane\ point[]=1\ point[]=2\ geo.lat=10\ geo.lon=20
+{
+\ \ \ "name":\ "Jane",
+\ \ \ "point":\ [
+\ \ \ \ \ \ 1,
+\ \ \ \ \ \ 2
+\ \ \ ],
+\ \ \ "geo":\ {
+\ \ \ \ \ \ "lat":\ 10,
+\ \ \ \ \ \ "lon":\ 20
+\ \ \ }
+}
+\f[]
+.fi
+.PP
+Without \f[C]\-d\f[], a different object is generated:
+.IP
+.nf
+\f[C]
+$\ jo\ \-p\ name=Jane\ point[]=1\ point[]=2\ geo.lat=10\ geo.lon=20
+{
+\ \ \ "name":\ "Jane",
+\ \ \ "point":\ [
+\ \ \ \ \ \ 1,
+\ \ \ \ \ \ 2
+\ \ \ ],
+\ \ \ "geo.lat":\ 10,
+\ \ \ "geo.lon":\ 20
 }
 \f[]
 .fi
