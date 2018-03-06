@@ -74,6 +74,7 @@ apt-get install jo
 * [ArchLinux](https://aur.archlinux.org/packages/jo/)
 * [OpenBSD](http://openports.se/textproc/jo)
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
+* [repology.org](https://repology.org/metapackage/jo/versions)
 
 ## Credits
 
