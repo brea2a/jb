@@ -6,7 +6,7 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] [-B] [-v] [-V] [-d keydelim] [--] [ [-s|-n|-b] word ...]
+jo [-p] [-a] [-B] [-e] [-v] [-V] [-d keydelim] [--] [ [-s|-n|-b] word ...]
 
 # DESCRIPTION
 
@@ -188,6 +188,10 @@ Read element values from a file in order to overcome ARG_MAX limits during objec
 -B
 :   By default *jo* interprets the strings "`true`" and "`false`" as boolean elements
     `true` and `false` respectively, and "`null`" as `null`. Disable with this option.
+
+-e
+:   Ignore empty stdin (i.e. don't produce a diagnostic error when *stdin*
+    is empty)
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line output it

@@ -35,7 +35,8 @@
 #define FLAG_PRETTY	0x02
 #define FLAG_NOBOOL	0x04
 #define FLAG_BOOLEAN	0x08
-#define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN)
+#define FLAG_NOSTDIN	0x10
+#define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN | FLAG_NOSTDIN)
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
 
@@ -302,12 +303,13 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-B] [-d keydelim] [-p] [-v] [-V] [--] [-s|-n|-b] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-B] [-d keydelim] [-p] [-e] [-v] [-V] [--] [-s|-n|-b] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words\n");
 	fprintf(stderr, "\t-B disable boolean true/false\n");
 	fprintf(stderr, "\t-d key will be object path separated by keydelim\n");
 	fprintf(stderr, "\t-p pretty-prints JSON on output\n");
+	fprintf(stderr, "\t-e if stdin is empty do not wait for input quit\n");
 	fprintf(stderr, "\t-s coerce type guessing to string\n");
 	fprintf(stderr, "\t-b coerce type guessing to bool\n");
 	fprintf(stderr, "\t-n coerce type guessing to number\n");
@@ -581,7 +583,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBd:hpvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBd:hpevV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
@@ -597,6 +599,9 @@ int main(int argc, char **argv)
 				return (0);
 			case 'p':
 				flags |= FLAG_PRETTY;
+				break;
+			case 'e':
+				flags |= FLAG_NOSTDIN;
 				break;
 			case 'v':
 				printf("jo %s\n", PACKAGE_VERSION);
@@ -620,6 +625,9 @@ int main(int argc, char **argv)
 	json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
 
 	if (argc == 0) {
+		if (flags & FLAG_NOSTDIN) {
+			return(0);
+		}
 		while (fgets(buf, sizeof(buf), stdin) != NULL) {
 			if (buf[strlen(buf) - 1] == '\n')
 				buf[strlen(buf) - 1] = 0;

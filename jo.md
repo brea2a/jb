@@ -10,7 +10,7 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo \[-p\] \[-a\] \[-B\] \[-v\] \[-V\] \[-d keydelim\] \[--\] \[
+jo \[-p\] \[-a\] \[-B\] \[-e\] \[-v\] \[-V\] \[-d keydelim\] \[--\] \[
 \[-s|-n|-b\] word ...\]
 
 DESCRIPTION
@@ -216,6 +216,10 @@ OPTIONS
 :   By default *jo* interprets the strings "`true`" and "`false`" as
     boolean elements `true` and `false` respectively, and "`null`" as
     `null`. Disable with this option.
+
+-e
+:   Ignore empty stdin (i.e. don't produce a diagnostic error when
+    *stdin* is empty)
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
