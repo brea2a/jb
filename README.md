@@ -73,6 +73,7 @@ apt-get install jo
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
 * [ArchLinux](https://aur.archlinux.org/packages/jo/)
 * [OpenBSD](http://openports.se/textproc/jo)
+* [FreeBSD](https://www.freshports.org/textproc/jo)
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
 * [repology.org](https://repology.org/metapackage/jo/versions)
 
