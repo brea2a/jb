@@ -355,7 +355,7 @@ bool resolve_nested(int flags, char **keyp, char key_delim, char *value, JsonNod
 			*bo = 0;
 		} else if ((bc = strchr(bo + 1, ']')) == NULL) {
 			fprintf(stderr, "missing closing bracket on %s\n", *keyp);
-			return (-1);
+			return (false);
 		} else {
 			*bo = *bc = 0;
 			member = bo + 1;
