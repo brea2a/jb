@@ -283,6 +283,19 @@ $\ jo\ \-p\ name=Jane\ point[]=1\ point[]=2\ geo.lat=10\ geo.lon=20
 \f[]
 .fi
 .PP
+Create empty objects or arrays, intentionally or potentially:
+.IP
+.nf
+\f[C]
+$\ jo\ <\ /dev/null
+{}
+
+$\ MY_ARRAY=(a=1\ b=2)
+$\ jo\ \-a\ "${MY_ARRAY[\@]}"\ <\ /dev/null
+["a=1","b=2"]
+\f[]
+.fi
+.PP
 Type coercion:
 .IP
 .nf

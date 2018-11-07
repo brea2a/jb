@@ -170,6 +170,15 @@ Without `-d`, a different object is generated:
        "geo.lon": 20
     }
 
+Create empty objects or arrays, intentionally or potentially:
+
+    $ jo < /dev/null
+    {}
+
+    $ MY_ARRAY=(a=1 b=2)
+    $ jo -a "${MY_ARRAY[@]}" < /dev/null
+    ["a=1","b=2"]
+
 Type coercion:
 
     $ jo -p -- -s a=true b=true -s c=123 d=123 -b e="1" -b f="true" -n g="This is a test" -b h="This is a test"
