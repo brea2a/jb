@@ -1,4 +1,19 @@
 
+2018-12-10 1.2
+- NEW: Dockerfile (#76)
+- UPD: add examples of empty arrays/objects to manual (#74)
+- NEW: support -e to ignore empty stdin; contributed by Robi Karp
+- NEW: object-path support (#57)
+
+2017-05-18 1.1
+- NEW: type coercion (#55)
+- FIX: quotes in quotes and double quotes at begin of string (#47)
+- FIX: catch null value in assignmen (#46)
+- NEW: support for key:=file.json for reading object values from a file (#43)
+- NEW: PPA contributed by Ross Duggan in #32
+- FIX: "null" is now handled like we handle "true" and "false"; disable with -B
+- NEW: more tests in the test suite
+
 2016-03-11 1.0
 - NEW: read JSON element values from files (#22)
 - FIX: usage diagnostic
