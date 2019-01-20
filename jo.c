@@ -22,7 +22,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -37,6 +37,9 @@
 #define FLAG_BOOLEAN	0x08
 #define FLAG_NOSTDIN	0x10
 #define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN | FLAG_NOSTDIN)
+
+/* Size of buffer blocks for pipe slurping */
+#define SLURP_BLOCK_SIZE 4096
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
 
@@ -95,29 +98,51 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 	}
 }
 
-char *slurp_file(FILE *fp, size_t *out_len, bool fold_newlines)
+const char *maybe_stdin(const char* filename)
 {
-	char *buf, *bp;
+	return strcmp(filename, "-") ? filename : "/dev/fd/0";
+}
+		
+
+char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
+{
+	char *buf;
+	int i = 0;
 	int ch;
-	off_t file_len;
+	off_t buffer_len;
+	FILE *fp;
 
-	if (fseeko(fp, 0, SEEK_END) != 0) {
-		fclose(fp);
-		return (NULL);
+	if ((fp = fopen(maybe_stdin(filename), "r")) == NULL) {
+		perror(filename);
+		errx(1, "Cannot open %s for reading", filename);
 	}
-	file_len = ftello(fp);
-	fseeko(fp, 0, SEEK_SET);
+	if (fseeko(fp, 0, SEEK_END) != 0) {
+		/* If we cannot seek, we're operating off a pipe and
+		   need to dynamically grow the buffer that we're
+		   reading into */
+		buffer_len = SLURP_BLOCK_SIZE;
+	} else {
+		buffer_len = ftello(fp) + 1;
+		fseeko(fp, 0, SEEK_SET);
+	}
 
-	if ((bp = buf = malloc(file_len + 1)) == NULL) {
-		fclose(fp);
-		return (NULL);
+	if ((buf = malloc(buffer_len)) == NULL) {
+		errx(1, "File %s is too large to be read into memory", filename);
 	}
 	while ((ch = fgetc(fp)) != EOF) {
-		if (ch != '\n' || !fold_newlines)
-			*bp++ = ch;
+		if (i == (buffer_len - 1)) {
+			buffer_len += SLURP_BLOCK_SIZE;
+			if ((buf = realloc(buf, buffer_len)) == NULL) {
+				errx(1, "File %s is too large to be read into memory", filename);
+			}
+		}
+		if (ch != '\n' || !fold_newlines) {
+			buf[i++] = ch;
+		}
 	}
-	*bp = 0;
-	*out_len = bp - buf;
+        fclose(fp);
+	buf[i] = 0;
+	*out_len = i;
 	return (buf);
 }
 
@@ -235,17 +260,10 @@ JsonNode *vnode(char *str, int flags)
 		bool binmode = (*str == '%');
 		size_t len = 0;
 		JsonNode *j;
-		FILE *fp;
 
-		if ((fp = fopen(filename, binmode ? "rb" : "r")) == NULL) {
-			errx(1, "Cannot open %s for reading", filename);
-		}
-
-		if ((content = slurp_file(fp, &len, false)) == NULL) {
+		if ((content = slurp_file(filename, &len, false)) == NULL) {
 			errx(1, "Error reading file %s", filename);
 		}
-
-		fclose(fp);
 
 		if (binmode) {
 			char *encoded;
@@ -405,21 +423,16 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 	char *r = strchr(kv, ':');
 
 	if ((r && *(r+1) == '=') && !q) {
-		FILE *fp;
 		char *filename = p + 1;
 		char *content;
 		size_t len;
 
-		if ((fp = fopen(filename, "r")) == NULL) {
-			errx(1, "Cannot open %s for reading", filename);
-		}
-		if ((content = slurp_file(fp, &len, false)) == NULL) {
+		if ((content = slurp_file(filename, &len, false)) == NULL) {
 			errx(1, "Error reading file %s", filename);
 		}
 
 		JsonNode *o = json_decode(content);
 		free(content);
-		fclose(fp);
 
 		if (o == NULL) {
 			errx(1, "Cannot decode JSON in file %s", filename);
