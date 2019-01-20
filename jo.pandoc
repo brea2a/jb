@@ -24,7 +24,8 @@ empty value behind the colon results in a `null` JSON element.
 
 *jo* creates an array instead of an object when `-a` is specified.
 
-When the `:=` operator is used in a _word_, the name to the right of `:=` is a file containing JSON which is parsed and assigned to the key left of the operator.
+When the `:=` operator is used in a _word_, the name to the right of `:=` is a file containing JSON which is parsed and assigned to the key left of the operator. The file may be specified as `-` to read from _jo_'s standard input.
+
 
 # TYPE COERCION
 
