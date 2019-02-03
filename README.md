@@ -34,8 +34,6 @@ make check
 make install
 ```
 
-[![asciicast](https://asciinema.org/a/4y7471mjfhvv2x4mdqmwfhu31.png)](https://asciinema.org/a/4y7471mjfhvv2x4mdqmwfhu31)
-
 
 ## Build from Github
 
