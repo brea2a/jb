@@ -75,6 +75,10 @@ apt-get install jo
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
 * [repology.org](https://repology.org/metapackage/jo/versions)
 
+## See also
+
+* [gjo](https://github.com/skanehira/gjo)
+
 ## Credits
 
 * `json.[ch]` by 2011 Joseph A. Adams (joeyadams3.14159@gmail.com).
