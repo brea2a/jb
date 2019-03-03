@@ -78,6 +78,7 @@ apt-get install jo
 ## See also
 
 * [gjo](https://github.com/skanehira/gjo)
+* [rjo](https://github.com/dskkato/rjo)
 
 ## Credits
 
