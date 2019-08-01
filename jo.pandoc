@@ -174,7 +174,7 @@ Type coercion:
 	$ jo -a -- -s 123 -n "This is a test" -b C_Rocks 456
 	["123",14,true,456]
 
-Read element values from files: a value which starts with `@` is read in plain whereas if it begins with a `%` it will be base64-encoded:
+Read element values from files: a value which starts with `@` is read in plain whereas if it begins with a `%` it will be base64-encoded and if it starts with `:` the contents are interpreted as JSON:
 
 	$ jo program=jo authors=@AUTHORS
 	{"program":"jo","authors":"Jan-Piet Mens <jpmens@gmail.com>"}
@@ -182,11 +182,18 @@ Read element values from files: a value which starts with `@` is read in plain w
 	$ jo filename=AUTHORS content=%AUTHORS
 	{"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
 
+	$ jo nested=:nested.json
+	{"nested":{"field1":123,"field2":"abc"}}
+
 Read element values from a file in order to overcome ARG_MAX limits during object assignment:
 
 	$ ls | jo -a > child.json
 	$ jo files:=child.json
 	{"files":["AUTHORS","COPYING","ChangeLog" ....
+
+	$ ls *.c | jo -a > source.json; ls *.h | jo -a > headers.json
+	$ jo -a :source.json :headers.json
+	[["base64.c","jo.c","json.c"],["base64.h","json.h"]]
 
 # OPTIONS
 

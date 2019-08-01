@@ -255,9 +255,10 @@ JsonNode *vnode(char *str, int flags)
 		}
 	}
 
-	if (*str == '@' || *str == '%') {
+	if (*str == '@' || *str == '%' || *str == ':') {
 		char *filename = str + 1, *content;
 		bool binmode = (*str == '%');
+		bool jsonmode = (*str == ':');
 		size_t len = 0;
 		JsonNode *j;
 
@@ -274,6 +275,8 @@ JsonNode *vnode(char *str, int flags)
 
 			j = json_mkstring(encoded);
 			free(encoded);
+		} else if (jsonmode) {
+			j = json_decode(content);
 		} else {
 			char *bp = content + strlen(content) - 1;
 

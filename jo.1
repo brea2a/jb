@@ -321,7 +321,8 @@ $\ jo\ \-a\ \-\-\ \-s\ 123\ \-n\ "This\ is\ a\ test"\ \-b\ C_Rocks\ 456
 .PP
 Read element values from files: a value which starts with \f[C]\@\f[] is
 read in plain whereas if it begins with a \f[C]%\f[] it will be
-base64\-encoded:
+base64\-encoded and if it starts with \f[C]:\f[] the contents are
+interpreted as JSON:
 .IP
 .nf
 \f[C]
@@ -330,6 +331,9 @@ $\ jo\ program=jo\ authors=\@AUTHORS
 
 $\ jo\ filename=AUTHORS\ content=%AUTHORS
 {"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
+
+$\ jo\ nested=:nested.json
+{"nested":{"field1":123,"field2":"abc"}}
 \f[]
 .fi
 .PP
@@ -341,6 +345,10 @@ during object assignment:
 $\ ls\ |\ jo\ \-a\ >\ child.json
 $\ jo\ files:=child.json
 {"files":["AUTHORS","COPYING","ChangeLog"\ ....
+
+$\ ls\ *.c\ |\ jo\ \-a\ >\ source.json;\ ls\ *.h\ |\ jo\ \-a\ >\ headers.json
+$\ jo\ \-a\ :source.json\ :headers.json
+[["base64.c","jo.c","json.c"],["base64.h","json.h"]]
 \f[]
 .fi
 .SH OPTIONS
