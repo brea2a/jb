@@ -26,6 +26,10 @@ char* base64_encode(const void* buf, size_t size)
 	const unsigned char* q = (const unsigned char*) buf;
 	size_t i = 0;
 
+	if (str == NULL) {
+		return NULL;
+	}
+
 	while (i < size) {
 		int c = q[i++];
 		c *= 256;
