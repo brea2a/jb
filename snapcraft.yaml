@@ -10,6 +10,7 @@ grade: stable
 apps:
   jo:
     command: jo
+    plugs: [home, removable-media]
 
 parts:
   jo:
