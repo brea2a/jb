@@ -260,7 +260,7 @@ JsonNode *vnode(char *str, int flags)
 		bool binmode = (*str == '%');
 		bool jsonmode = (*str == ':');
 		size_t len = 0;
-		JsonNode *j;
+		JsonNode *j = NULL;
 
 		if ((content = slurp_file(filename, &len, false)) == NULL) {
 			errx(1, "Error reading file %s", filename);
@@ -277,7 +277,10 @@ JsonNode *vnode(char *str, int flags)
 			free(encoded);
 		} else if (jsonmode) {
 			j = json_decode(content);
-		} else {
+		}
+
+		// If it got this far without valid JSON, just consider it a string
+		if (j == NULL) {
 			char *bp = content + strlen(content) - 1;
 
 			if (*bp == '\n') *bp-- = 0;
