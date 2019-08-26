@@ -66,6 +66,10 @@ apt-get update -q
 apt-get install jo
 ```
 
+## Snap
+
+Thanks to [Roger Light](https://twitter.com/ralight/status/1166023769623867398), _jo_ is available as a [snap package](https://snapcraft.io/jo). Use `snap install jo` from a Linux distro that supports snaps.
+
 ## Others
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
