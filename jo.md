@@ -1,6 +1,6 @@
 ---
 title: 'JO(1) User Manuals'
-...
+---
 
 NAME
 ====
@@ -37,7 +37,8 @@ colon results in a `null` JSON element.
 
 When the `:=` operator is used in a *word*, the name to the right of
 `:=` is a file containing JSON which is parsed and assigned to the key
-left of the operator.
+left of the operator. The file may be specified as `-` to read from
+*jo*'s standard input.
 
 TYPE COERCION
 =============
@@ -197,7 +198,8 @@ Type coercion:
     ["123",14,true,456]
 
 Read element values from files: a value which starts with `@` is read in
-plain whereas if it begins with a `%` it will be base64-encoded:
+plain whereas if it begins with a `%` it will be base64-encoded and if
+it starts with `:` the contents are interpreted as JSON:
 
     $ jo program=jo authors=@AUTHORS
     {"program":"jo","authors":"Jan-Piet Mens <jpmens@gmail.com>"}
@@ -205,12 +207,19 @@ plain whereas if it begins with a `%` it will be base64-encoded:
     $ jo filename=AUTHORS content=%AUTHORS
     {"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
 
+    $ jo nested=:nested.json
+    {"nested":{"field1":123,"field2":"abc"}}
+
 Read element values from a file in order to overcome ARG\_MAX limits
 during object assignment:
 
     $ ls | jo -a > child.json
     $ jo files:=child.json
     {"files":["AUTHORS","COPYING","ChangeLog" ....
+
+    $ ls *.c | jo -a > source.json; ls *.h | jo -a > headers.json
+    $ jo -a :source.json :headers.json
+    [["base64.c","jo.c","json.c"],["base64.h","json.h"]]
 
 OPTIONS
 =======
