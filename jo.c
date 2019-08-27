@@ -277,6 +277,9 @@ JsonNode *vnode(char *str, int flags)
 			free(encoded);
 		} else if (jsonmode) {
 			j = json_decode(content);
+			if (j == NULL) {
+				errx(1, "Cannot decode JSON in file %s", filename);
+			}
 		}
 
 		// If it got this far without valid JSON, just consider it a string
