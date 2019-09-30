@@ -83,6 +83,7 @@ Thanks to [Roger Light](https://twitter.com/ralight/status/1166023769623867398),
 
 * [gjo](https://github.com/skanehira/gjo)
 * [rjo](https://github.com/dskkato/rjo)
+* [jjo](https://github.com/memoryhole/jjo)
 
 ## Credits
 
