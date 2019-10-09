@@ -295,6 +295,9 @@ JsonNode *vnode(char *str, int flags)
 	}
 
 	if (*str == '{' || *str == '[') {
+		if (type == JSON_STRING) {
+			return json_mkstring(str);
+		}
 		JsonNode *obj = json_decode(str);
 
 		if (obj == NULL) {
