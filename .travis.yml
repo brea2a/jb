@@ -16,5 +16,5 @@ before_script:
  - ./configure
 script:
  - make
- - make check
+ - COPYFILE_DISABLE=1 make distcheck
 
