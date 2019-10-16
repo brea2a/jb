@@ -7,6 +7,9 @@ jo_EXTRA	= jo.pandoc
 dist_man_MANS	= jo.1
 jo_LDADD	= -lm
 
+bashcompdir = @bashcompdir@
+dist_bashcomp_DATA = jo.bash
+
 if USE_PANDOC
 # Add targets to rebuild pages
 jo.1: jo.pandoc
