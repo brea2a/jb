@@ -28,6 +28,10 @@ then
 fi
 AM_CONDITIONAL([USE_PANDOC], [test -n "$PANDOC"])
 
+PKG_CHECK_VAR(bashcompdir, [bash-completion], [completionsdir], ,
+     bashcompdir="${sysconfdir}/bash_completion.d")
+AC_SUBST(bashcompdir)
+
 AC_CONFIG_FILES([Makefile tests/jo.07.sh])
 AC_OUTPUT
 
@@ -36,6 +40,7 @@ echo "
   Prefix.........: $prefix
   C compiler.....: $CC $CFLAGS $CPPFLAGS
   Pandoc.........: ${PANDOC:-NONE}
+  Bash completion: $bashcompdir/jo.bash
 
   Now type 'make @<:@<target>@:>@'
     where the optional <target> is:
