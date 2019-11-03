@@ -15,6 +15,4 @@ before_script:
  - autoreconf -i
  - ./configure
 script:
- - make
- - COPYFILE_DISABLE=1 make distcheck
-
+ - make check
