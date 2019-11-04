@@ -13,7 +13,7 @@
 #include "base64.h"
 
 /*
- * Copyright (C) 2016-2019 Jan-Piet Mens <jpmens@gmail.com>
+ * Copyright (C) 2016-2019 Jan-Piet Mens <jp@mens.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
