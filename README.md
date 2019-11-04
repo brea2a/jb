@@ -58,11 +58,7 @@ brew install jo
 
 ## Ubuntu
 
-To install on Ubuntu, use [this PPA](https://launchpad.net/~duggan/+archive/ubuntu/jo):
-
 ```
-apt-add-repository ppa:duggan/jo --yes
-apt-get update -q
 apt-get install jo
 ```
 
