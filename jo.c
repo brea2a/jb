@@ -13,7 +13,7 @@
 #include "base64.h"
 
 /*
- * Copyright (C) 2016 Jan-Piet Mens <jpmens@gmail.com>
+ * Copyright (C) 2016-2019 Jan-Piet Mens <jpmens@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -255,43 +255,47 @@ JsonNode *vnode(char *str, int flags)
 		}
 	}
 
-	if (*str == '@' || *str == '%' || *str == ':') {
-		char *filename = str + 1, *content;
-		bool binmode = (*str == '%');
-		bool jsonmode = (*str == ':');
-		size_t len = 0;
-		JsonNode *j = NULL;
-
-		if ((content = slurp_file(filename, &len, false)) == NULL) {
-			errx(1, "Error reading file %s", filename);
-		}
-
-		if (binmode) {
-			char *encoded;
-
-			if ((encoded = base64_encode(content, len)) == NULL) {
-				errx(1, "Cannot base64-encode file %s", filename);
+	if (*str == '\\') {
+		++str;
+	} else {
+		if (*str == '@' || *str == '%' || *str == ':') {
+			char *filename = str + 1, *content;
+			bool binmode = (*str == '%');
+			bool jsonmode = (*str == ':');
+			size_t len = 0;
+			JsonNode *j = NULL;
+	
+			if ((content = slurp_file(filename, &len, false)) == NULL) {
+				errx(1, "Error reading file %s", filename);
 			}
-
-			j = json_mkstring(encoded);
-			free(encoded);
-		} else if (jsonmode) {
-			j = json_decode(content);
+	
+			if (binmode) {
+				char *encoded;
+	
+				if ((encoded = base64_encode(content, len)) == NULL) {
+					errx(1, "Cannot base64-encode file %s", filename);
+				}
+	
+				j = json_mkstring(encoded);
+				free(encoded);
+			} else if (jsonmode) {
+				j = json_decode(content);
+				if (j == NULL) {
+					errx(1, "Cannot decode JSON in file %s", filename);
+				}
+			}
+	
+			// If it got this far without valid JSON, just consider it a string
 			if (j == NULL) {
-				errx(1, "Cannot decode JSON in file %s", filename);
+				char *bp = content + strlen(content) - 1;
+	
+				if (*bp == '\n') *bp-- = 0;
+				if (*bp == '\r') *bp = 0;
+				j = json_mkstring(content);
 			}
+			free(content);
+			return (j);
 		}
-
-		// If it got this far without valid JSON, just consider it a string
-		if (j == NULL) {
-			char *bp = content + strlen(content) - 1;
-
-			if (*bp == '\n') *bp-- = 0;
-			if (*bp == '\r') *bp = 0;
-			j = json_mkstring(content);
-		}
-		free(content);
-		return (j);
 	}
 
 	if (*str == '{' || *str == '[') {
