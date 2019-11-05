@@ -6,6 +6,7 @@ description: |
 
 confinement: strict
 grade: stable
+base: core
 
 apps:
   jo:
@@ -17,3 +18,5 @@ parts:
     plugin: autotools
     source-type: git
     source: https://github.com/jpmens/jo
+    build-packages:
+      - pkg-config
