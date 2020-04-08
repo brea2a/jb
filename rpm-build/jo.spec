@@ -1,5 +1,5 @@
 Name:           jo
-Version:        1.1
+Version:        1.3
 Release:        1%{?dist}
 Summary:        jo is a small utility to create JSON objects
 
@@ -31,9 +31,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 %{_bindir}/*
 %{_mandir}/man1/*
+%{_datadir}/bash-completion/completions
 
 
 %changelog
+* Tue Apr 7 2020 Kilian Cavalotti <kilian@stanford.edu> 1.3-1
+- Bumped to 1.3 release version
+- Include bash-completion file in package
 * Thu May 18 2017 Fabian Arrotin <fabian.arrotin@arrfab.net> 1.1-1
 - Bumped to 1.1 release version
 * Wed Mar 15 2017 Fabian Arrotin <fabian.arrotin@arrfab.net> 1.0-1
