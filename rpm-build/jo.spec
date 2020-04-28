@@ -1,11 +1,11 @@
 Name:           jo
 Version:        1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        jo is a small utility to create JSON objects
 
 License:        GPL2
 URL:            https://github.com/jpmens/jo
-Source0:        https://github.com/jpmens/jo/releases/download/v%{version}/jo-%{version}.tar.gz
+Source0:        https://github.com/jpmens/jo/releases/download/%{version}/jo-%{version}.tar.gz
 
 BuildRequires:  autoconf
 BuildRequires:	pandoc
@@ -31,10 +31,17 @@ rm -rf $RPM_BUILD_ROOT
 %doc
 %{_bindir}/*
 %{_mandir}/man1/*
+%if 0%{?suse_version}
 %{_datadir}/bash-completion/completions
+%else
+%{_sysconfdir}/bash_completion.d/%{name}.bash
+%endif
 
 
 %changelog
+* Tue Apr 28 2020 Christian Albrecht <cal@albix.de> 1.3-2
+- Fix broken download url
+- Make bash completion work on RHEL based distros
 * Tue Apr 7 2020 Kilian Cavalotti <kilian@stanford.edu> 1.3-1
 - Bumped to 1.3 release version
 - Include bash-completion file in package
