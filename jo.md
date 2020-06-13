@@ -11,7 +11,7 @@ SYNOPSIS
 ========
 
 jo \[-p\] \[-a\] \[-B\] \[-e\] \[-v\] \[-V\] \[-d keydelim\] \[--\] \[
-\[-s|-n|-b\] word ...\]
+\[-s\|-n\|-b\] word ...\]
 
 DESCRIPTION
 ===========
@@ -27,6 +27,18 @@ to guess the type of *value* in order to create number (using
 is specified, *key* will be interpreted as an *object path*, whose
 individual components are separated by the first character of
 *keydelim*.
+
+*jo* normally treats *value* as a literal string value, unless it begins
+with one of the following characters:
+
+  value    action
+  -------- ---------------------------------------------------------------------
+  @file    substitute the contents of *file* as-is
+  \%file   substitute the contents of *file* in base64-encoded form
+  :file    interpret the contents of *file* as JSON, and substitute the result
+
+Escape the special character with a backslash to prevent this
+interpretation.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the
 value begins with `T`, `t`, or the numeric value is greater than zero,
@@ -50,15 +62,15 @@ that there are no more global options.
 
 Type coercion works as follows:
 
-  word         -s               -n          -b          default
-  ------------ ---------------- ----------- ----------- ----------------
-  a=           "a":""           "a":0       "a":false   "a":null
-  a=string     "a":"string"     "a":6       "a":true    "a":"string"
-  a="quoted"   "a":""quoted""   "a":8       "a":true    "a":""quoted""
-  a=12345      "a":"12345"      "a":12345   "a":true    "a":12345
-  a=true       "a":"true"       "a":1       "a":true    "a":true
-  a=false      "a":"false"      "a":0       "a":false   "a":false
-  a=null       "a":""           "a":0       "a":false   "a":null
+  word           -s                 -n          -b          default
+  -------------- ------------------ ----------- ----------- ------------------
+  a=             "a":\"\"           "a":0       "a":false   "a":null
+  a=string       "a":"string"       "a":6       "a":true    "a":"string"
+  a=\"quoted\"   "a":"\"quoted\""   "a":8       "a":true    "a":"\"quoted\""
+  a=12345        "a":"12345"        "a":12345   "a":true    "a":12345
+  a=true         "a":"true"         "a":1       "a":true    "a":true
+  a=false        "a":"false"        "a":0       "a":false   "a":false
+  a=null         "a":\"\"           "a":0       "a":false   "a":null
 
 Coercing a non-number string to number outputs the *length* of the
 string.
@@ -210,6 +222,17 @@ it starts with `:` the contents are interpreted as JSON:
     $ jo nested=:nested.json
     {"nested":{"field1":123,"field2":"abc"}}
 
+These characters can be escaped to avoid interpretation:
+
+    $ jo name="JP Mens" twitter='\@jpmens'
+    {"name":"JP Mens","twitter":"@jpmens"}
+
+    $ jo char=" " URIescape=\\%20
+    {"char":" ","URIescape":"%20"}
+
+    $ jo action="split window" vimcmd="\:split"
+    {"action":"split window","vimcmd":":split"}
+
 Read element values from a file in order to overcome ARG\_MAX limits
 during object assignment:
 
@@ -236,7 +259,7 @@ OPTIONS
     `null`. Disable with this option.
 
 -e
-:   Ignore empty stdin (i.e. don't produce a diagnostic error when
+:   Ignore empty stdin (i.e. don't produce a diagnostic error when
     *stdin* is empty)
 
 -p
