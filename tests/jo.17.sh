@@ -8,6 +8,16 @@ done
 # coerce array items
 ${JO:-jo} -a -- -s 123 -n "This is a test" -b C_Rocks 456
 
+# coercion flag strings should be usable as inputs, when they aren't flags
+${JO:-jo} -a -- -s -s -n -n -b -b
+
+# non-flag strings should be read as normal strings, even if they begin with "-"
+${JO:-jo} -a -- --test --toast
+${JO:-jo} -- --test=--toast
+
+# coercion is one-shot, so all "--toast" strings are normal input
+${JO:-jo} -a -- -b --test --toast -s --test --toast -n --test --toast
+
 ### These should NOT be coerced
 
 # @ booleans

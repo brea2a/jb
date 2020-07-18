@@ -50,12 +50,14 @@ static JsonNode *pile;		/* pile of nested objects/arrays */
 # define ftello	ftell
 #endif
 
+#define TAG_TO_FLAGS(tag) ((FLAG_MASK + 1) * (tag))
+#define TAG_FLAG_BOOL     (TAG_TO_FLAGS(JSON_BOOL))
+#define TAG_FLAG_STRING   (TAG_TO_FLAGS(JSON_STRING))
+#define TAG_FLAG_NUMBER   (TAG_TO_FLAGS(JSON_NUMBER))
+#define COERCE_MASK       (TAG_FLAG_BOOL | TAG_FLAG_STRING | TAG_FLAG_NUMBER)
+
 JsonTag flags_to_tag(int flags) {
 	return flags / (FLAG_MASK + 1);
-}
-
-int tag_to_flags(JsonTag tag) {
-	return (FLAG_MASK + 1) * tag;
 }
 
 void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber)
@@ -666,27 +668,32 @@ int main(int argc, char **argv)
 		}
 	} else {
 		while ((kv = *argv++)) {
-			if (kv[0] == '-') {
+			if (kv[0] == '-' && !(flags & COERCE_MASK)) {
 				/* Set one-shot coerce flag */
 				switch (kv[1]) {
 					case 'b':
-						flags |= tag_to_flags(JSON_BOOL);
+						flags |= TAG_FLAG_BOOL;
 						break;
 					case 's':
-						flags |= tag_to_flags(JSON_STRING);
+						flags |= TAG_FLAG_STRING;
 						break;
 					case 'n':
-						flags |= tag_to_flags(JSON_NUMBER);
+						flags |= TAG_FLAG_NUMBER;
 						break;
 					default:
-						exit(usage(progname));
+						/* Treat as normal input */
+						p = utf8_from_locale(kv, -1);
+						append_kv(json, flags, key_delim, p);
+						utf8_free(p);
+						/* Reset any one-shot coerce flags */
+						flags &= ~(COERCE_MASK);
 				}
 			} else {
 				p = utf8_from_locale(kv, -1);
 				append_kv(json, flags, key_delim, p);
 				utf8_free(p);
 				/* Reset any one-shot coerce flags */
-				flags &= FLAG_MASK;
+				flags &= ~(COERCE_MASK);
 			}
 		}
 	}
