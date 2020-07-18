@@ -1,5 +1,5 @@
 FROM alpine AS builder
-RUN apk -U add automake autoconf build-base make
+RUN apk -U add automake autoconf build-base make pkgconf
 COPY . /src
 WORKDIR /src
 RUN autoreconf -i && ./configure && make check && make install
