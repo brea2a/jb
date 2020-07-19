@@ -1,5 +1,5 @@
 ---
-title: 'JO(1) User Manuals'
+title: JO(1) User Manuals
 ---
 
 NAME
@@ -31,11 +31,11 @@ individual components are separated by the first character of
 *jo* normally treats *value* as a literal string value, unless it begins
 with one of the following characters:
 
-  value    action
-  -------- ---------------------------------------------------------------------
-  @file    substitute the contents of *file* as-is
-  \%file   substitute the contents of *file* in base64-encoded form
-  :file    interpret the contents of *file* as JSON, and substitute the result
+  value   action
+  ------- ---------------------------------------------------------------------
+  @file   substitute the contents of *file* as-is
+  %file   substitute the contents of *file* in base64-encoded form
+  :file   interpret the contents of *file* as JSON, and substitute the result
 
 Escape the special character with a backslash to prevent this
 interpretation.
