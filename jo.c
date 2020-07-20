@@ -36,7 +36,8 @@
 #define FLAG_NOBOOL	0x04
 #define FLAG_BOOLEAN	0x08
 #define FLAG_NOSTDIN	0x10
-#define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN | FLAG_NOSTDIN)
+#define FLAG_SKIPNULLS	0x20
+#define FLAG_MASK	(FLAG_ARRAY | FLAG_PRETTY | FLAG_NOBOOL | FLAG_BOOLEAN | FLAG_NOSTDIN | FLAG_SKIPNULLS)
 
 /* Size of buffer blocks for pipe slurping */
 #define SLURP_BLOCK_SIZE 4096
@@ -224,7 +225,7 @@ JsonNode *vnode(char *str, int flags)
 	JsonTag type = flags_to_tag(flags);
 
 	if (strlen(str) == 0) {
-		return jo_mknull(type);
+		return (flags & FLAG_SKIPNULLS) ? (JsonNode *)NULL : jo_mknull(type);
 	}
 
 	/* If str begins with a double quote, keep it a string */
@@ -614,7 +615,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBd:hpevV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBd:hpenvV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
@@ -633,6 +634,9 @@ int main(int argc, char **argv)
 				break;
 			case 'e':
 				flags |= FLAG_NOSTDIN;
+				break;
+			case 'n':
+				flags |= FLAG_SKIPNULLS;
 				break;
 			case 'v':
 				printf("jo %s\n", PACKAGE_VERSION);

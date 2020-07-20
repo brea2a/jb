@@ -6,14 +6,17 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] [-B] [-e] [-v] [-V] [-d keydelim] [--] [ [-s|-n|-b] word ...]
+jo [-p] [-a] [-B] [-e] [-n] [-v] [-V] [-d keydelim] [--] [ [-s|-n|-b] word ...]
 
 # DESCRIPTION
 
-*jo* creates a JSON string on _stdout_ from _word_s given it as arguments or read from _stdin_. Without
+*jo* creates a JSON string on _stdout_ from *word*s given it as arguments or read from _stdin_. Without
 option `-a` it generates an object whereby each _word_ is a `key=value` (or `key@value`)
 pair with _key_ being the JSON object element and _value_ its value. *jo* attempts to
 guess the type of _value_ in order to create number (using _strtod(3)_), string, or null values in JSON.
+
+A missing or empty _value_ normally results in an element whose value is `null`. If `-n` is specified, this
+element is not created.
 
 *jo* normally treats _key_ as a literal string value. If the `-d` option is specified, _key_ will be
 interpreted as an _object path_, whose individual components are separated by the first character of _keydelim_.
@@ -29,8 +32,7 @@ value action
 Escape the special character with a backslash to prevent this interpretation.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the value begins with `T`, `t`,
-or the numeric value is greater than zero, the result is `true`, else `false`. A missing or
-empty value behind the colon results in a `null` JSON element.
+or the numeric value is greater than zero, the result is `true`, else `false`.
 
 *jo* creates an array instead of an object when `-a` is specified.
 
@@ -40,7 +42,7 @@ When the `:=` operator is used in a _word_, the name to the right of `:=` is a f
 # TYPE COERCION
 
 *jo*'s type guesses can be overridden on a per-word basis by prefixing _word_ with `-s` for _string_,
-`-n` for _number_, or `-b` for _boolean_. The list of _word_s *must* be prefixed with `--`, to indicate
+`-n` for _number_, or `-b` for _boolean_. The list of *word*s *must* be prefixed with `--`, to indicate
 to *jo* that there are no more global options.
 
 Type coercion works as follows:
@@ -231,6 +233,9 @@ Read element values from a file in order to overcome ARG_MAX limits during objec
 -e
 :   Ignore empty stdin (i.e. don't produce a diagnostic error when *stdin*
     is empty)
+
+-n
+:   Do not add keys with empty values.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line output it

@@ -540,6 +540,7 @@ JsonNode *json_mkobject(void)
 
 static void append_node(JsonNode *parent, JsonNode *child)
 {
+	if (!child) return;
 	child->parent = parent;
 	child->prev = parent->children.tail;
 	child->next = NULL;
@@ -553,6 +554,7 @@ static void append_node(JsonNode *parent, JsonNode *child)
 
 static void prepend_node(JsonNode *parent, JsonNode *child)
 {
+	if (!child) return;
 	child->parent = parent;
 	child->prev = NULL;
 	child->next = parent->children.head;
@@ -566,12 +568,14 @@ static void prepend_node(JsonNode *parent, JsonNode *child)
 
 static void append_member(JsonNode *object, char *key, JsonNode *value)
 {
+	if (!value) return;
 	value->key = key;
 	append_node(object, value);
 }
 
 void json_append_element(JsonNode *array, JsonNode *element)
 {
+	if (!element) return;
 	assert(array->tag == JSON_ARRAY);
 	assert(element->parent == NULL);
 	
@@ -580,6 +584,7 @@ void json_append_element(JsonNode *array, JsonNode *element)
 
 void json_prepend_element(JsonNode *array, JsonNode *element)
 {
+	if (!element) return;
 	assert(array->tag == JSON_ARRAY);
 	assert(element->parent == NULL);
 	
@@ -588,6 +593,7 @@ void json_prepend_element(JsonNode *array, JsonNode *element)
 
 void json_append_member(JsonNode *object, const char *key, JsonNode *value)
 {
+	if (!value) return;
 	assert(object->tag == JSON_OBJECT);
 	assert(value->parent == NULL);
 	
@@ -596,6 +602,7 @@ void json_append_member(JsonNode *object, const char *key, JsonNode *value)
 
 void json_prepend_member(JsonNode *object, const char *key, JsonNode *value)
 {
+	if (!value) return;
 	assert(object->tag == JSON_OBJECT);
 	assert(value->parent == NULL);
 	
