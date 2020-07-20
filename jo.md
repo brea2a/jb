@@ -10,18 +10,21 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo \[-p\] \[-a\] \[-B\] \[-e\] \[-v\] \[-V\] \[-d keydelim\] \[--\] \[
-\[-s\|-n\|-b\] word ...\]
+jo \[-p\] \[-a\] \[-B\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d keydelim\]
+\[--\] \[ \[-s\|-n\|-b\] word ...\]
 
 DESCRIPTION
 ===========
 
-*jo* creates a JSON string on *stdout* from \_word\_s given it as
+*jo* creates a JSON string on *stdout* from *word*s given it as
 arguments or read from *stdin*. Without option `-a` it generates an
 object whereby each *word* is a `key=value` (or `key@value`) pair with
 *key* being the JSON object element and *value* its value. *jo* attempts
 to guess the type of *value* in order to create number (using
 *strtod(3)*), string, or null values in JSON.
+
+A missing or empty *value* normally results in an element whose value is
+`null`. If `-n` is specified, this element is not created.
 
 *jo* normally treats *key* as a literal string value. If the `-d` option
 is specified, *key* will be interpreted as an *object path*, whose
@@ -42,8 +45,7 @@ interpretation.
 
 *jo* treats `key@value` specifically as boolean JSON elements: if the
 value begins with `T`, `t`, or the numeric value is greater than zero,
-the result is `true`, else `false`. A missing or empty value behind the
-colon results in a `null` JSON element.
+the result is `true`, else `false`.
 
 *jo* creates an array instead of an object when `-a` is specified.
 
@@ -57,7 +59,7 @@ TYPE COERCION
 
 *jo*'s type guesses can be overridden on a per-word basis by prefixing
 *word* with `-s` for *string*, `-n` for *number*, or `-b` for *boolean*.
-The list of \_word\_s *must* be prefixed with `--`, to indicate to *jo*
+The list of *word*s *must* be prefixed with `--`, to indicate to *jo*
 that there are no more global options.
 
 Type coercion works as follows:
@@ -233,7 +235,7 @@ These characters can be escaped to avoid interpretation:
     $ jo action="split window" vimcmd="\:split"
     {"action":"split window","vimcmd":":split"}
 
-Read element values from a file in order to overcome ARG\_MAX limits
+Read element values from a file in order to overcome ARG_MAX limits
 during object assignment:
 
     $ ls | jo -a > child.json
@@ -261,6 +263,9 @@ OPTIONS
 -e
 :   Ignore empty stdin (i.e. don't produce a diagnostic error when
     *stdin* is empty)
+
+-n
+:   Do not add keys with empty values.
 
 -p
 :   Pretty-print the JSON string on output instead of the terse one-line
