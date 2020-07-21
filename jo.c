@@ -366,7 +366,7 @@ int usage(char *prog)
  *   *baseop -> object node in which caller should insert "value"
  */
 
-bool resolve_nested(int flags, char **keyp, char key_delim, char *value, JsonNode **baseop)
+bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, JsonNode **baseop)
 {
 	char *member = NULL, *bo, *bc, *so;		/* bracket open, close, sub-object */
 	JsonNode *op;
@@ -412,17 +412,9 @@ bool resolve_nested(int flags, char **keyp, char key_delim, char *value, JsonNod
 		}
 
 		if (member == NULL) {		/* we're doing an array */
-			if (flags & FLAG_BOOLEAN) {
-				json_append_element(op, boolnode(value));
-			} else {
-				json_append_element(op, vnode(value, flags));
-			}
+			json_append_element(op, value);
 		} else {			/* we're doing an object */
-			if (flags & FLAG_BOOLEAN) {
-				json_append_member(op, member, boolnode(value));
-			} else {
-				json_append_member(op, member, vnode(value, flags));
-			}
+			json_append_member(op, member, value);
 		}
 
 		if (!found) {
@@ -458,7 +450,8 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 		}
 
 		*r = 0;		/* Chop at ":=" */
-		json_append_member(object, kv, o);
+		if (!resolve_nested(flags, &kv, key_delim, o, &object))
+			json_append_member(object, kv, o);
 		return (0);
 	}
 
@@ -466,20 +459,22 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 		return (-1);
 	}
 
-
+	JsonNode *val;
 	if (p) {
 		if (p) {
 			*p = 0;
+			val = vnode(p+1, flags);
 
-			if (!resolve_nested(flags, &kv, key_delim, p+1, &object))
-				json_append_member(object, kv, vnode(p+1, flags));
+			if (!resolve_nested(flags, &kv, key_delim, val, &object))
+				json_append_member(object, kv, val);
 		}
 	} else {
 		if (q) {
 			*q = 0;
+			val = boolnode(q+1);
 
-			if (!resolve_nested(flags | FLAG_BOOLEAN, &kv, key_delim, q+1, &object))
-				json_append_member(object, kv, boolnode(q+1));
+			if (!resolve_nested(flags | FLAG_BOOLEAN, &kv, key_delim, val, &object))
+				json_append_member(object, kv, val);
 		}
 	}
 	return (0);
