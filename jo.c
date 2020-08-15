@@ -343,7 +343,7 @@ int usage(char *prog)
 	fprintf(stderr, "Usage: %s [-a] [-B] [-d keydelim] [-p] [-e] [-v] [-V] [--] [-s|-n|-b] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words\n");
-	fprintf(stderr, "\t-B disable boolean true/false\n");
+	fprintf(stderr, "\t-B disable boolean true/false/null detection\n");
 	fprintf(stderr, "\t-d key will be object path separated by keydelim\n");
 	fprintf(stderr, "\t-p pretty-prints JSON on output\n");
 	fprintf(stderr, "\t-e if stdin is empty do not wait for input quit\n");
