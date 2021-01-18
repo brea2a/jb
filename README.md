@@ -38,7 +38,7 @@ make install
 
 ## Build from Github
 
-[![Build Status](https://api.travis-ci.org/jpmens/jo.svg?branch=master)](https://travis-ci.org/jpmens/jo)
+[![Build Status](https://api.travis-ci.com/jpmens/jo.svg?branch=master)](https://travis-ci.com/github/jpmens/jo)
 
 To install from the repository, you will need a C compiler as well as a relatively recent version of _automake_ and _autoconf_.
 
