@@ -598,6 +598,8 @@ int main(int argc, char **argv)
 	int c, key_delim = 0;
 	bool showversion = false;
 	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
+	char *in_file = NULL, *in_str;
+	size_t in_len = 0;
 	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
 	int flags = 0;
 	JsonNode *json, *op;
@@ -610,7 +612,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBd:hpenvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBd:f:hpenvV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
@@ -620,6 +622,9 @@ int main(int argc, char **argv)
 				break;
 			case 'd':
 				key_delim = optarg[0];
+				break;
+			case 'f':
+				in_file = optarg;
 				break;
 			case 'h':
 				usage(progname);
@@ -652,7 +657,26 @@ int main(int argc, char **argv)
 	argv += optind;
 
 	pile = json_mkobject();
-	json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
+	if (in_file != NULL) {
+		if ((in_str = slurp_file(maybe_stdin(in_file), &in_len, false)) == NULL) {
+			errx(1, "Error reading file %s", in_file);
+		}
+		json = json_decode(in_str);
+		if (json) {
+			switch (json->tag) {
+				case JSON_ARRAY:
+					flags |= FLAG_ARRAY;
+					break;
+				case JSON_OBJECT:
+					break;
+				default:
+					errx(1, "Input JSON not an array or object: %s", stringify(json, flags));
+			}
+		} else
+			json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
+	} else {
+		json = (flags & FLAG_ARRAY) ? json_mkarray() : json_mkobject();
+	}
 
 	if (argc == 0) {
 		if (flags & FLAG_NOSTDIN) {

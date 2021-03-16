@@ -10,18 +10,24 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo \[-p\] \[-a\] \[-B\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d keydelim\]
-\[--\] \[ \[-s\|-n\|-b\] word ...\]
+jo \[-p\] \[-a\] \[-B\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d keydelim\] \[-f
+file\] \[--\] \[ \[-s\|-n\|-b\] word ...\]
 
 DESCRIPTION
 ===========
 
 *jo* creates a JSON string on *stdout* from *word*s given it as
-arguments or read from *stdin*. Without option `-a` it generates an
-object whereby each *word* is a `key=value` (or `key@value`) pair with
-*key* being the JSON object element and *value* its value. *jo* attempts
-to guess the type of *value* in order to create number (using
-*strtod(3)*), string, or null values in JSON.
+arguments or read from *stdin*. If `-f` is specified, *jo* first loads
+the contents of *file* as a JSON object or array, then modifies it with
+subsequent *word*s before printing the final JSON string to *stdout*.
+*file* may be specified as `-` to read from *jo*'s standard input; this
+takes precedence over reading *word*s from *stdin*.
+
+Without option `-a` it generates an object whereby each *word* is a
+`key=value` (or `key@value`) pair with *key* being the JSON object
+element and *value* its value. *jo* attempts to guess the type of
+*value* in order to create number (using *strtod(3)*), string, or null
+values in JSON.
 
 A missing or empty *value* normally results in an element whose value is
 `null`. If `-n` is specified, this element is not created.
@@ -245,6 +251,14 @@ during object assignment:
     $ ls *.c | jo -a > source.json; ls *.h | jo -a > headers.json
     $ jo -a :source.json :headers.json
     [["base64.c","jo.c","json.c"],["base64.h","json.h"]]
+
+Add elements to existing JSON:
+
+    $ jo -f source.json 1 | jo -f - 2 3
+    ["base64.c","jo.c","json.c",1,2,3]
+
+    $ curl -s 'https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | jo -f - status=Rickrolled
+    { ...., "type":"video","author_url":"https://www.youtube.com/user/RickAstleyVEVO","status":"Rickrolled"}
 
 OPTIONS
 =======
