@@ -6,12 +6,17 @@ jo - JSON output from a shell
 
 # SYNOPSIS
 
-jo [-p] [-a] [-B] [-e] [-n] [-v] [-V] [-d keydelim] [--] [ [-s|-n|-b] word ...]
+jo [-p] [-a] [-B] [-e] [-n] [-v] [-V] [-d keydelim] [-f file] [--] [ [-s|-n|-b] word ...]
 
 # DESCRIPTION
 
-*jo* creates a JSON string on _stdout_ from *word*s given it as arguments or read from _stdin_. Without
-option `-a` it generates an object whereby each _word_ is a `key=value` (or `key@value`)
+*jo* creates a JSON string on _stdout_ from *word*s given it as arguments or read from _stdin_.
+If `-f` is specified, *jo* first loads the contents of _file_ as a JSON object or array, then
+modifies it with subsequent *word*s before printing the final JSON string to _stdout_.
+_file_ may be specified as `-` to read from _jo_'s standard input; this takes precedence over
+reading *word*s from _stdin_.
+
+Without option `-a` it generates an object whereby each _word_ is a `key=value` (or `key@value`)
 pair with _key_ being the JSON object element and _value_ its value. *jo* attempts to
 guess the type of _value_ in order to create number (using _strtod(3)_), string, or null values in JSON.
 
@@ -218,9 +223,17 @@ Read element values from a file in order to overcome ARG_MAX limits during objec
 	$ jo -a :source.json :headers.json
 	[["base64.c","jo.c","json.c"],["base64.h","json.h"]]
 
+Add elements to existing JSON:
+
+	$ jo -f source.json 1 | jo -f - 2 3
+	["base64.c","jo.c","json.c",1,2,3]
+
+	$ curl -s 'https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | jo -f - status=Rickrolled
+	{ ...., "type":"video","author_url":"https://www.youtube.com/user/RickAstleyVEVO","status":"Rickrolled"}
+
 # OPTIONS
 
-*jo* understands the following global options. 
+*jo* understands the following global options.
 
 -a
 :   Interpret the list of _words_ as array values and produce an array instead of
