@@ -357,6 +357,7 @@ static int write_hex16(char *out, uint16_t val);
 static JsonNode *mknode(JsonTag tag);
 static void append_node(JsonNode *parent, JsonNode *child);
 static void prepend_node(JsonNode *parent, JsonNode *child);
+static void insert_node(JsonNode *parent, JsonNode *child);
 static void append_member(JsonNode *object, char *key, JsonNode *value);
 
 /* Assertion-friendly validity checks */
@@ -566,11 +567,47 @@ static void prepend_node(JsonNode *parent, JsonNode *child)
 	parent->children.head = child;
 }
 
+static void insert_node(JsonNode *parent, JsonNode *child)
+{
+	if (!child) return;
+	JsonNode *this = parent->children.head;
+
+	while (this != NULL && strcmp(this->key, child->key))
+		this = this->next;
+
+	if (this != NULL)
+	{
+		/* we found a matching key, insert before this node */
+		if (this->prev == NULL)
+		{
+			prepend_node(parent, child);
+		}
+		else
+		{
+			child->parent = parent;
+			child->next = this->next;
+			child->prev = this->prev;
+			this->prev->next = child;
+			this->prev = child;
+		}
+		json_delete(this);
+	}
+	else
+		append_node(parent, child);
+}
+
 static void append_member(JsonNode *object, char *key, JsonNode *value)
 {
 	if (!value) return;
 	value->key = key;
 	append_node(object, value);
+}
+
+static void insert_member(JsonNode *object, char *key, JsonNode *value)
+{
+	if (!value) return;
+	value->key = key;
+	insert_node(object, value);
 }
 
 void json_append_element(JsonNode *array, JsonNode *element)
@@ -608,6 +645,15 @@ void json_prepend_member(JsonNode *object, const char *key, JsonNode *value)
 	
 	value->key = json_strdup(key);
 	prepend_node(object, value);
+}
+
+void json_insert_member(JsonNode *object, const char *key, JsonNode *value)
+{
+	if (!value) return;
+	assert(object->tag == JSON_OBJECT);
+	assert(value->parent == NULL);
+
+	insert_member(object, json_strdup(key), value);
 }
 
 void json_remove_from_parent(JsonNode *node)

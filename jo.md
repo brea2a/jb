@@ -10,8 +10,8 @@ jo - JSON output from a shell
 SYNOPSIS
 ========
 
-jo \[-p\] \[-a\] \[-B\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d keydelim\] \[-f
-file\] \[--\] \[ \[-s\|-n\|-b\] word ...\]
+jo \[-p\] \[-a\] \[-B\] \[-D\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d
+keydelim\] \[-f file\] \[--\] \[ \[-s\|-n\|-b\] word ...\]
 
 DESCRIPTION
 ===========
@@ -260,6 +260,13 @@ Add elements to existing JSON:
     $ curl -s 'https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | jo -f - status=Rickrolled
     { ...., "type":"video","author_url":"https://www.youtube.com/user/RickAstleyVEVO","status":"Rickrolled"}
 
+Deduplicate object keys (*jo* appends duplicate object keys by default):
+
+    $ jo a=1 b=2 a=3
+    {"a":1,"b":2,"a":3}
+    $ jo -D a=1 b=2 a=3
+    {"a":3,"b":2}
+
 OPTIONS
 =======
 
@@ -270,9 +277,12 @@ OPTIONS
     instead of an object.
 
 -B
-:   By default *jo* interprets the strings "`true`" and "`false`" as
+:   By default, *jo* interprets the strings "`true`" and "`false`" as
     boolean elements `true` and `false` respectively, and "`null`" as
     `null`. Disable with this option.
+
+-D
+:   Deduplicate object keys.
 
 -e
 :   Ignore empty stdin (i.e. don't produce a diagnostic error when
