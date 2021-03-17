@@ -43,6 +43,7 @@
 #define SLURP_BLOCK_SIZE 4096
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
+void (*json_insert_obj_fn)(JsonNode *object, const char *key, JsonNode *value) = json_append_member;
 
 #ifdef _WIN32
 # define err(n, s)	{ fprintf(stderr, s); exit(n); }
@@ -73,16 +74,16 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 			continue;	/* Don't clobber existing keys */
 		if (obj->tag == JSON_OBJECT) {
 			if (node->tag == JSON_STRING)
-				json_append_member(obj, node->key, json_mkstring(node->string_));
+				json_insert_obj_fn(obj, node->key, json_mkstring(node->string_));
 			else if (node->tag == JSON_NUMBER)
-				json_append_member(obj, node->key, json_mknumber(node->number_));
+				json_insert_obj_fn(obj, node->key, json_mknumber(node->number_));
 			else if (node->tag == JSON_BOOL)
-				json_append_member(obj, node->key, json_mkbool(node->bool_));
+				json_insert_obj_fn(obj, node->key, json_mkbool(node->bool_));
 			else if (node->tag == JSON_NULL)
-				json_append_member(obj, node->key, json_mknull());
+				json_insert_obj_fn(obj, node->key, json_mknull());
 			else if (node->tag == JSON_OBJECT) {
 				/* Deep-copy existing object to new object */
-				json_append_member(obj, node->key, (obj_child = json_mkobject()));
+				json_insert_obj_fn(obj, node->key, (obj_child = json_mkobject()));
 				json_foreach(node_child, node) {
 					json_copy_to_object(obj_child, node_child, clobber);
 				}
@@ -340,10 +341,11 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-B] [-d keydelim] [-p] [-e] [-n] [-v] [-V] [-f file] [--] [-s|-n|-b] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-B] [-D] [-d keydelim] [-p] [-e] [-n] [-v] [-V] [-f file] [--] [-s|-n|-b] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words\n");
 	fprintf(stderr, "\t-B disable boolean true/false/null detection\n");
+	fprintf(stderr, "\t-D deduplicate object keys\n");
 	fprintf(stderr, "\t-d key will be object path separated by keydelim\n");
 	fprintf(stderr, "\t-f load file as JSON object or array\n");
 	fprintf(stderr, "\t-p pretty-prints JSON on output\n");
@@ -380,7 +382,7 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 			if ((op = json_find_member(*baseop, *keyp)) == NULL) {
 				/* Add a nested object node */
 				op = json_mkobject();
-				json_append_member(*baseop, *keyp, op);
+				json_insert_obj_fn(*baseop, *keyp, op);
 			}
 			*baseop = op;
 			*keyp = so + 1;
@@ -415,11 +417,11 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 		if (member == NULL) {		/* we're doing an array */
 			json_append_element(op, value);
 		} else {			/* we're doing an object */
-			json_append_member(op, member, value);
+			json_insert_obj_fn(op, member, value);
 		}
 
 		if (!found) {
-			json_append_member(*baseop, *keyp, op);
+			json_insert_obj_fn(*baseop, *keyp, op);
 		}
 
 		return (true);
@@ -452,7 +454,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 
 		*r = 0;		/* Chop at ":=" */
 		if (!resolve_nested(flags, &kv, key_delim, o, &object))
-			json_append_member(object, kv, o);
+			json_insert_obj_fn(object, kv, o);
 		return (0);
 	}
 
@@ -467,7 +469,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 			val = vnode(p+1, flags);
 
 			if (!resolve_nested(flags, &kv, key_delim, val, &object))
-				json_append_member(object, kv, val);
+				json_insert_obj_fn(object, kv, val);
 		}
 	} else {
 		if (q) {
@@ -475,7 +477,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 			val = boolnode(q+1);
 
 			if (!resolve_nested(flags | FLAG_BOOLEAN, &kv, key_delim, val, &object))
-				json_append_member(object, kv, val);
+				json_insert_obj_fn(object, kv, val);
 		}
 	}
 	return (0);
@@ -581,10 +583,10 @@ int version(int flags)
 	JsonNode *json = json_mkobject();
 	char *js;
 
-	json_append_member(json, "program", json_mkstring("jo"));
-	json_append_member(json, "author", json_mkstring("Jan-Piet Mens"));
-	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
-	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
+	json_insert_obj_fn(json, "program", json_mkstring("jo"));
+	json_insert_obj_fn(json, "author", json_mkstring("Jan-Piet Mens"));
+	json_insert_obj_fn(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
+	json_insert_obj_fn(json, "version", json_mkstring(PACKAGE_VERSION));
 
 	if ((js = stringify(json, flags)) != NULL) {
 		printf("%s\n", js);
@@ -613,13 +615,16 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBd:f:hpenvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBDd:f:hpenvV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
 				break;
 			case 'B':
 				flags |= FLAG_NOBOOL;
+				break;
+			case 'D':
+				json_insert_obj_fn = json_insert_member;
 				break;
 			case 'd':
 				key_delim = optarg[0];
@@ -738,7 +743,7 @@ int main(int argc, char **argv)
 			continue;
 		}
 		json_copy_to_object(o, op, 0);
-		json_append_member(json, op->key, o);
+		json_insert_obj_fn(json, op->key, o);
 	}
 
 

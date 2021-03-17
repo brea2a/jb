@@ -8,8 +8,8 @@
 jo - JSON output from a shell
 .SH SYNOPSIS
 .PP
-jo [-p] [-a] [-B] [-e] [-n] [-v] [-V] [-d keydelim] [-f file] [\[en]] [
-[-s|-n|-b] word \&...]
+jo [-p] [-a] [-B] [-D] [-e] [-n] [-v] [-V] [-d keydelim] [-f file]
+[\[en]] [ [-s|-n|-b] word \&...]
 .SH DESCRIPTION
 .PP
 \f[I]jo\f[R] creates a JSON string on \f[I]stdout\f[R] from
@@ -425,6 +425,18 @@ $ curl -s \[aq]https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw
 { ...., \[dq]type\[dq]:\[dq]video\[dq],\[dq]author_url\[dq]:\[dq]https://www.youtube.com/user/RickAstleyVEVO\[dq],\[dq]status\[dq]:\[dq]Rickrolled\[dq]}
 \f[R]
 .fi
+.PP
+Deduplicate object keys (\f[I]jo\f[R] appends duplicate object keys by
+default):
+.IP
+.nf
+\f[C]
+$ jo a=1 b=2 a=3
+{\[dq]a\[dq]:1,\[dq]b\[dq]:2,\[dq]a\[dq]:3}
+$ jo -D a=1 b=2 a=3
+{\[dq]a\[dq]:3,\[dq]b\[dq]:2}
+\f[R]
+.fi
 .SH OPTIONS
 .PP
 \f[I]jo\f[R] understands the following global options.
@@ -434,11 +446,14 @@ Interpret the list of \f[I]words\f[R] as array values and produce an
 array instead of an object.
 .TP
 -B
-By default \f[I]jo\f[R] interprets the strings \[lq]\f[C]true\f[R]\[rq]
+By default, \f[I]jo\f[R] interprets the strings \[lq]\f[C]true\f[R]\[rq]
 and \[lq]\f[C]false\f[R]\[rq] as boolean elements \f[C]true\f[R] and
 \f[C]false\f[R] respectively, and \[lq]\f[C]null\f[R]\[rq] as
 \f[C]null\f[R].
 Disable with this option.
+.TP
+-D
+Deduplicate object keys.
 .TP
 -e
 Ignore empty stdin (i.e.\ don\[cq]t produce a diagnostic error when
