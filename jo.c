@@ -43,7 +43,6 @@
 #define SLURP_BLOCK_SIZE 4096
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
-void (*json_insert_obj_fn)(JsonNode *object, const char *key, JsonNode *value) = json_append_member;
 
 #ifdef _WIN32
 # define err(n, s)	{ fprintf(stderr, s); exit(n); }
@@ -74,16 +73,16 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 			continue;	/* Don't clobber existing keys */
 		if (obj->tag == JSON_OBJECT) {
 			if (node->tag == JSON_STRING)
-				json_insert_obj_fn(obj, node->key, json_mkstring(node->string_));
+				json_append_member(obj, node->key, json_mkstring(node->string_));
 			else if (node->tag == JSON_NUMBER)
-				json_insert_obj_fn(obj, node->key, json_mknumber(node->number_));
+				json_append_member(obj, node->key, json_mknumber(node->number_));
 			else if (node->tag == JSON_BOOL)
-				json_insert_obj_fn(obj, node->key, json_mkbool(node->bool_));
+				json_append_member(obj, node->key, json_mkbool(node->bool_));
 			else if (node->tag == JSON_NULL)
-				json_insert_obj_fn(obj, node->key, json_mknull());
+				json_append_member(obj, node->key, json_mknull());
 			else if (node->tag == JSON_OBJECT) {
 				/* Deep-copy existing object to new object */
-				json_insert_obj_fn(obj, node->key, (obj_child = json_mkobject()));
+				json_append_member(obj, node->key, (obj_child = json_mkobject()));
 				json_foreach(node_child, node) {
 					json_copy_to_object(obj_child, node_child, clobber);
 				}
@@ -382,7 +381,7 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 			if ((op = json_find_member(*baseop, *keyp)) == NULL) {
 				/* Add a nested object node */
 				op = json_mkobject();
-				json_insert_obj_fn(*baseop, *keyp, op);
+				json_append_member(*baseop, *keyp, op);
 			}
 			*baseop = op;
 			*keyp = so + 1;
@@ -417,11 +416,11 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 		if (member == NULL) {		/* we're doing an array */
 			json_append_element(op, value);
 		} else {			/* we're doing an object */
-			json_insert_obj_fn(op, member, value);
+			json_append_member(op, member, value);
 		}
 
 		if (!found) {
-			json_insert_obj_fn(*baseop, *keyp, op);
+			json_append_member(*baseop, *keyp, op);
 		}
 
 		return (true);
@@ -454,7 +453,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 
 		*r = 0;		/* Chop at ":=" */
 		if (!resolve_nested(flags, &kv, key_delim, o, &object))
-			json_insert_obj_fn(object, kv, o);
+			json_append_member(object, kv, o);
 		return (0);
 	}
 
@@ -469,7 +468,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 			val = vnode(p+1, flags);
 
 			if (!resolve_nested(flags, &kv, key_delim, val, &object))
-				json_insert_obj_fn(object, kv, val);
+				json_append_member(object, kv, val);
 		}
 	} else {
 		if (q) {
@@ -477,7 +476,7 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 			val = boolnode(q+1);
 
 			if (!resolve_nested(flags | FLAG_BOOLEAN, &kv, key_delim, val, &object))
-				json_insert_obj_fn(object, kv, val);
+				json_append_member(object, kv, val);
 		}
 	}
 	return (0);
@@ -583,10 +582,10 @@ int version(int flags)
 	JsonNode *json = json_mkobject();
 	char *js;
 
-	json_insert_obj_fn(json, "program", json_mkstring("jo"));
-	json_insert_obj_fn(json, "author", json_mkstring("Jan-Piet Mens"));
-	json_insert_obj_fn(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
-	json_insert_obj_fn(json, "version", json_mkstring(PACKAGE_VERSION));
+	json_append_member(json, "program", json_mkstring("jo"));
+	json_append_member(json, "author", json_mkstring("Jan-Piet Mens"));
+	json_append_member(json, "repo", json_mkstring("https://github.com/jpmens/jo"));
+	json_append_member(json, "version", json_mkstring(PACKAGE_VERSION));
 
 	if ((js = stringify(json, flags)) != NULL) {
 		printf("%s\n", js);
@@ -624,7 +623,7 @@ int main(int argc, char **argv)
 				flags |= FLAG_NOBOOL;
 				break;
 			case 'D':
-				json_insert_obj_fn = json_insert_member;
+				json_dedup_members(true);
 				break;
 			case 'd':
 				key_delim = optarg[0];
@@ -743,7 +742,7 @@ int main(int argc, char **argv)
 			continue;
 		}
 		json_copy_to_object(o, op, 0);
-		json_insert_obj_fn(json, op->key, o);
+		json_append_member(json, op->key, o);
 	}
 
 

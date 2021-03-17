@@ -360,6 +360,8 @@ static void prepend_node(JsonNode *parent, JsonNode *child);
 static void insert_node(JsonNode *parent, JsonNode *child);
 static void append_member(JsonNode *object, char *key, JsonNode *value);
 
+static void (*append_member_node_fn)(JsonNode *parent, JsonNode *child) = append_node;
+
 /* Assertion-friendly validity checks */
 static bool tag_is_valid(unsigned int tag);
 static bool number_is_valid(const char *num);
@@ -600,14 +602,7 @@ static void append_member(JsonNode *object, char *key, JsonNode *value)
 {
 	if (!value) return;
 	value->key = key;
-	append_node(object, value);
-}
-
-static void insert_member(JsonNode *object, char *key, JsonNode *value)
-{
-	if (!value) return;
-	value->key = key;
-	insert_node(object, value);
+	append_member_node_fn(object, value);
 }
 
 void json_append_element(JsonNode *array, JsonNode *element)
@@ -647,13 +642,9 @@ void json_prepend_member(JsonNode *object, const char *key, JsonNode *value)
 	prepend_node(object, value);
 }
 
-void json_insert_member(JsonNode *object, const char *key, JsonNode *value)
+void json_dedup_members(bool b)
 {
-	if (!value) return;
-	assert(object->tag == JSON_OBJECT);
-	assert(value->parent == NULL);
-
-	insert_member(object, json_strdup(key), value);
+	append_member_node_fn = b ? insert_node : append_node;
 }
 
 void json_remove_from_parent(JsonNode *node)
