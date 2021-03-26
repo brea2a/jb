@@ -79,6 +79,7 @@ Thanks to [Roger Light](https://twitter.com/ralight/status/1166023769623867398),
 * [ArchLinux](https://aur.archlinux.org/packages/jo/)
 * [OpenBSD](http://openports.se/textproc/jo)
 * [FreeBSD](https://www.freshports.org/textproc/jo)
+* [Guix](https://guix.gnu.org/packages/jo-1.4/)
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
 * [repology.org](https://repology.org/metapackage/jo/versions)
 
