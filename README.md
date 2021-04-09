@@ -82,6 +82,7 @@ Thanks to [Roger Light](https://twitter.com/ralight/status/1166023769623867398),
 * [Guix](https://guix.gnu.org/packages/jo-1.4/)
 * [pkgsrc](http://pkgsrc.se/textproc/jo)
 * [repology.org](https://repology.org/metapackage/jo/versions)
+* [Docker](https://hub.docker.com/repository/docker/jpmens/jo)
 
 ## See also
 
