@@ -6,11 +6,11 @@ description: |
 
 confinement: strict
 grade: stable
-base: core
+base: core20
 
 apps:
   jo:
-    command: jo
+    command: usr/local/bin/jo
     plugs: [home, removable-media]
 
 parts:
