@@ -465,13 +465,11 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 
 	JsonNode *val;
 	if (p) {
-		if (p) {
-			*p = 0;
-			val = vnode(p+1, flags);
+		*p = 0;
+		val = vnode(p+1, flags);
 
-			if (!resolve_nested(flags, &kv, key_delim, val, &object))
-				json_append_member(object, kv, val);
-		}
+		if (!resolve_nested(flags, &kv, key_delim, val, &object))
+			json_append_member(object, kv, val);
 	} else {
 		if (q) {
 			*q = 0;
