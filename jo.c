@@ -374,6 +374,8 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 	JsonNode *op;
 	int found = false;
 
+	(void)flags;
+
 	if (key_delim) {
 		/* First construct nested object */
 		while ((so = strchr(*keyp, key_delim)) != NULL) {
