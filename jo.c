@@ -567,9 +567,9 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p) free(p)
 #else
 # define utf8_from_locale(p, l) (p)
-# define utf8_free(p)
+# define utf8_free(p) do {} while (0)
 # define locale_from_utf8(p, l) (p)
-# define locale_free(p)
+# define locale_free(p) do {} while (0)
 #endif
 
 char *stringify(JsonNode *json, int flags)
