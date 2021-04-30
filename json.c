@@ -1225,9 +1225,9 @@ void emit_string(SB *out, const char *str)
 #endif
 						b += 6;
 					} else {
-						*b++ = 0xEF;
-						*b++ = 0xBF;
-						*b++ = 0xBD;
+						*b++ = (char)0xEF;
+						*b++ = (char)0xBF;
+						*b++ = (char)0xBD;
 					}
 					s++;
 				} else if (c < 0x1F || (c >= 0x80 && escape_unicode)) {
