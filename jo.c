@@ -374,6 +374,8 @@ bool resolve_nested(int flags, char **keyp, char key_delim, JsonNode *value, Jso
 	JsonNode *op;
 	int found = false;
 
+	(void)flags;
+
 	if (key_delim) {
 		/* First construct nested object */
 		while ((so = strchr(*keyp, key_delim)) != NULL) {
@@ -463,13 +465,11 @@ int member_to_object(JsonNode *object, int flags, char key_delim, char *kv)
 
 	JsonNode *val;
 	if (p) {
-		if (p) {
-			*p = 0;
-			val = vnode(p+1, flags);
+		*p = 0;
+		val = vnode(p+1, flags);
 
-			if (!resolve_nested(flags, &kv, key_delim, val, &object))
-				json_append_member(object, kv, val);
-		}
+		if (!resolve_nested(flags, &kv, key_delim, val, &object))
+			json_append_member(object, kv, val);
 	} else {
 		if (q) {
 			*q = 0;
@@ -565,9 +565,9 @@ char* locale_from_utf8(const char *utf8, size_t len)
 # define locale_free(p) free(p)
 #else
 # define utf8_from_locale(p, l) (p)
-# define utf8_free(p)
+# define utf8_free(p) do {} while (0)
 # define locale_from_utf8(p, l) (p)
-# define locale_free(p)
+# define locale_free(p) do {} while (0)
 #endif
 
 char *stringify(JsonNode *json, int flags)
