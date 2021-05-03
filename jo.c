@@ -101,12 +101,6 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 	}
 }
 
-const char *maybe_stdin(const char* filename)
-{
-	return strcmp(filename, "-") ? filename : "/dev/fd/0";
-}
-		
-
 char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 {
 	char *buf;
@@ -114,8 +108,10 @@ char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 	int ch;
 	off_t buffer_len;
 	FILE *fp;
+	bool use_stdin = strcmp(filename, "-") == 0;
 
-	if ((fp = fopen(maybe_stdin(filename), "r")) == NULL) {
+	if (use_stdin) fp = stdin;
+	else if ((fp = fopen(filename, "r")) == NULL) {
 		perror(filename);
 		errx(1, "Cannot open %s for reading", filename);
 	}
@@ -143,7 +139,7 @@ char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 			buf[i++] = ch;
 		}
 	}
-        fclose(fp);
+	if (!use_stdin) fclose(fp);
 	buf[i] = 0;
 	*out_len = i;
 	return (buf);
@@ -663,7 +659,7 @@ int main(int argc, char **argv)
 
 	pile = json_mkobject();
 	if (in_file != NULL) {
-		if ((in_str = slurp_file(maybe_stdin(in_file), &in_len, false)) == NULL) {
+		if ((in_str = slurp_file(in_file, &in_len, false)) == NULL) {
 			errx(1, "Error reading file %s", in_file);
 		}
 		json = json_decode(in_str);
