@@ -10,6 +10,11 @@ jo_LDADD	= -lm
 bashcompdir = @bashcompdir@
 dist_bashcomp_DATA = jo.bash
 
+zshcompdir = $(datadir)/zsh/site-functions
+dist_zshcomp_DATA = jo.zsh
+install-data-hook:
+	mv -f $(DESTDIR)$(zshcompdir)/jo.zsh $(DESTDIR)$(zshcompdir)/_jo
+
 if USE_PANDOC
 # Add targets to rebuild pages
 jo.1: jo.pandoc
