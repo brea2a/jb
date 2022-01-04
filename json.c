@@ -34,6 +34,18 @@
 		exit(EXIT_FAILURE);                     \
 	} while (0)
 
+#ifdef _WIN32
+# define failx(e, n, f, ...)	if (!(e)) {	\
+		fprintf(stderr, "JSON_ERR: " f, __VA_ARGS__);	\
+		exit(n);	\
+	}
+#else
+# include <err.h>
+# define failx(e, n, f, ...)	if (!(e)) {	\
+		errx(n, "JSON_ERR: " f, __VA_ARGS__);	\
+	}
+#endif
+
 /* Sadly, strdup is not portable. */
 static char *json_strdup(const char *str)
 {
@@ -271,7 +283,12 @@ static int utf8_write_char(js_uchar_t unicode, char *out)
 {
 	unsigned char *o = (unsigned char*) out;
 	
-	assert(unicode <= 0x10FFFF && !(unicode >= 0xD800 && unicode <= 0xDFFF));
+	failx(
+		unicode <= 0x10FFFF && !(unicode >= 0xD800 && unicode <= 0xDFFF),
+		1,
+		"Illegal Unicode codepoint 0x%08X found",
+		unicode
+	);
 
 	if (unicode <= 0x7F) {
 		/* U+0000..U+007F */
@@ -323,7 +340,12 @@ static void to_surrogate_pair(js_uchar_t unicode, uint16_t *uc, uint16_t *lc)
 {
 	js_uchar_t n;
 	
-	assert(unicode >= 0x10000 && unicode <= 0x10FFFF);
+	failx(
+		unicode >= 0x10000 && unicode <= 0x10FFFF,
+		1,
+		"Cannot construct UTF-16 surrogate pair for Unicode codepoint 0x%08X",
+		unicode
+	);
 	
 	n = unicode - 0x10000;
 	*uc = ((n >> 10) & 0x3FF) | 0xD800;
@@ -608,7 +630,13 @@ static void append_member(JsonNode *object, char *key, JsonNode *value)
 void json_append_element(JsonNode *array, JsonNode *element)
 {
 	if (!element) return;
-	assert(array->tag == JSON_ARRAY);
+	failx(
+		array->tag == JSON_ARRAY,
+		1,
+		"Cannot append %s to non-array %s",
+		json_encode(element),
+		json_encode(array)
+	);
 	assert(element->parent == NULL);
 	
 	append_node(array, element);
@@ -617,7 +645,13 @@ void json_append_element(JsonNode *array, JsonNode *element)
 void json_prepend_element(JsonNode *array, JsonNode *element)
 {
 	if (!element) return;
-	assert(array->tag == JSON_ARRAY);
+	failx(
+		array->tag == JSON_ARRAY,
+		1,
+		"Cannot append %s to non-array %s",
+		json_encode(element),
+		json_encode(array)
+	);
 	assert(element->parent == NULL);
 	
 	prepend_node(array, element);
@@ -626,7 +660,14 @@ void json_prepend_element(JsonNode *array, JsonNode *element)
 void json_append_member(JsonNode *object, const char *key, JsonNode *value)
 {
 	if (!value) return;
-	assert(object->tag == JSON_OBJECT);
+	failx(
+		object->tag == JSON_OBJECT,
+		1,
+		"Cannot add {\"%s\":%s} to non-object %s",
+		key,
+		json_encode(value),
+		json_encode(object)
+	);
 	assert(value->parent == NULL);
 	
 	append_member(object, json_strdup(key), value);
@@ -635,7 +676,14 @@ void json_append_member(JsonNode *object, const char *key, JsonNode *value)
 void json_prepend_member(JsonNode *object, const char *key, JsonNode *value)
 {
 	if (!value) return;
-	assert(object->tag == JSON_OBJECT);
+	failx(
+		object->tag == JSON_OBJECT,
+		1,
+		"Cannot add {\"%s\":%s} to non-object %s",
+		key,
+		json_encode(value),
+		json_encode(object)
+	);
 	assert(value->parent == NULL);
 	
 	value->key = json_strdup(key);
