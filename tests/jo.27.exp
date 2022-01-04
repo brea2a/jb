@@ -1,0 +1,6 @@
+{"b":[1,2]}
+jo: JSON_ERR: Cannot add {"a":3} to non-object [1]
+Test 2 should fail
+{"d":{"m":10,"n":20}}
+jo: JSON_ERR: Cannot append 20 to non-array {"m":10}
+Test 4 should fail
