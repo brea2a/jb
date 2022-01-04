@@ -1,5 +1,5 @@
 project('jo', 'c',
-        version: '1.4',
+        version: '1.5',
         license: 'GPL-2.0-or-later',
         meson_version: '>=0.57.0',
         default_options: ['warning_level=3', 'optimization=2'])

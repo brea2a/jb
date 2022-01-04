@@ -1,5 +1,5 @@
 name: jo
-version: "1.4"
+version: "1.5"
 summary: jo
 description: |
   This is jo, a small utility to create JSON objects or arrays.

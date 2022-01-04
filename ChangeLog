@@ -1,3 +1,16 @@
+2022-01-04 1.5
+
+- NEW: replace asserts with human errors (#162)
+- NEW: zsh completion (#158)
+- FIX: stdin filter on Windows (#
+- FIX: several cleanups
+- NEW: Meson build
+- UPD: snap to newer base (#149)
+- NEW: option to deduplicate keys (#143, #145)
+- NEW: Filter functionality (#141)
+- FIX: file embedding
+- FIX: add missing tests to Makefile.am
+
 2020-07-18 1.4
 
 - FIX: Coercion flag logic now permits getopt(3) double-dash

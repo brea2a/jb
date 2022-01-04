@@ -58,4 +58,17 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.11.sh tests/jo.11.exp \
 		  tests/jo.12.sh tests/jo.12.exp \
 		  tests/jo.13.sh tests/jo.13.exp tests/jo-logo.png \
-		  tests/jo.14.sh tests/jo.14.exp 
+		  tests/jo.14.sh tests/jo.14.exp \
+		  tests/jo.15.sh tests/jo.15.exp \
+		  tests/jo.16.sh tests/jo.16.exp \
+		  tests/jo.17.sh tests/jo.17.exp \
+		  tests/jo.18.sh tests/jo.18.exp \
+		  tests/jo.19.sh tests/jo.19.exp \
+		  tests/jo.20.sh tests/jo.20.exp \
+		  tests/jo.21.sh tests/jo.21.exp \
+		  tests/jo.22.sh tests/jo.22.exp \
+		  tests/jo.23.sh tests/jo.23.exp \
+		  tests/jo.24.sh tests/jo.24.exp \
+		  tests/jo.25.sh tests/jo.25.exp \
+		  tests/jo.26.sh tests/jo.26.exp \
+		  tests/jo.27.sh tests/jo.27.exp
