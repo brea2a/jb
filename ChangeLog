@@ -1,3 +1,9 @@
+
+2022-01-05 1.6
+
+- FIX: repair tests broken by AUTHORS change (#164)
+- FIX: repair make distcheck by removing copied _jo zsh functions
+
 2022-01-04 1.5
 
 - NEW: replace asserts with human errors (#162)

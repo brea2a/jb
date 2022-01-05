@@ -15,6 +15,9 @@ dist_zshcomp_DATA = jo.zsh
 install-data-hook:
 	mv -f $(DESTDIR)$(zshcompdir)/jo.zsh $(DESTDIR)$(zshcompdir)/_jo
 
+uninstall-local:
+	rm -f $(DESTDIR)$(zshcompdir)/_jo
+
 if USE_PANDOC
 # Add targets to rebuild pages
 jo.1: jo.pandoc
@@ -61,7 +64,7 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.14.sh tests/jo.14.exp \
 		  tests/jo.15.sh tests/jo.15.exp \
 		  tests/jo.16.sh tests/jo.16.exp \
-		  tests/jo.17.sh tests/jo.17.exp \
+		  tests/jo.17.sh tests/jo.17.exp tests/jo-creator.txt \
 		  tests/jo.18.sh tests/jo.18.exp \
 		  tests/jo.19.sh tests/jo.19.exp \
 		  tests/jo.20.sh tests/jo.20.exp \

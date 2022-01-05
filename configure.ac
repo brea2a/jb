@@ -1,5 +1,5 @@
 AC_PREREQ([2.63])
-AC_INIT([jo], [1.5], [jp@mens.de])
+AC_INIT([jo], [1.6], [jp@mens.de])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([jo.c])
 

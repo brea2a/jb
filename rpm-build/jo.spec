@@ -1,5 +1,5 @@
 Name:           jo
-Version:        1.5
+Version:        1.6
 Release:        2%{?dist}
 Summary:        jo is a small utility to create JSON objects
 
