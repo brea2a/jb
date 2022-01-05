@@ -26,5 +26,5 @@ for v in 0 1; do
 done
 
 # @/% file inclusions
-${JO:-jo} -- -s s=@${srcdir:=.}/AUTHORS -n n=@${srcdir:=.}/AUTHORS -b b=@${srcdir:=.}/AUTHORS a=@${srcdir:=.}/AUTHORS
-${JO:-jo} -- -s s=%${srcdir:=.}/AUTHORS -n n=%${srcdir:=.}/AUTHORS -b b=%${srcdir:=.}/AUTHORS a=%${srcdir:=.}/AUTHORS
+${JO:-jo} -- -s s=@${srcdir:=.}/tests/jo-creator.txt -n n=@${srcdir:=.}/tests/jo-creator.txt -b b=@${srcdir:=.}/tests/jo-creator.txt a=@${srcdir:=.}/tests/jo-creator.txt
+${JO:-jo} -- -s s=%${srcdir:=.}/tests/jo-creator.txt -n n=%${srcdir:=.}/tests/jo-creator.txt -b b=%${srcdir:=.}/tests/jo-creator.txt a=%${srcdir:=.}/tests/jo-creator.txt
