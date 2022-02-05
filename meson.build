@@ -61,7 +61,7 @@ custom_target('jo.md',
               output: 'jo.md',
               input: 'jo.pandoc',
               build_always_stale: true,
-              command: [pandoc, '-s', '-w', 'gfm', '-f', 'markdown', '-o', '@OUTPUT@', '@INPUT@'])
+              command: [pandoc, '-s', '-w', 'gfm', '-f', 'markdown-smart', '-o', '@OUTPUT@', '@INPUT@'])
 endif
 
 install_man(jo1)

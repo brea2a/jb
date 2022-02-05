@@ -5,7 +5,7 @@ jo - JSON output from a shell
 # SYNOPSIS
 
 jo \[-p\] \[-a\] \[-B\] \[-D\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d
-keydelim\] \[-f file\] \[–\] \[ \[-s|-n|-b\] word …\]
+keydelim\] \[-f file\] \[--\] \[ \[-s|-n|-b\] word ...\]
 
 # DESCRIPTION
 
@@ -13,7 +13,7 @@ keydelim\] \[-f file\] \[–\] \[ \[-s|-n|-b\] word …\]
 arguments or read from *stdin*. If `-f` is specified, *jo* first loads
 the contents of *file* as a JSON object or array, then modifies it with
 subsequent *word*s before printing the final JSON string to *stdout*.
-*file* may be specified as `-` to read from *jo*’s standard input; this
+*file* may be specified as `-` to read from *jo*'s standard input; this
 takes precedence over reading *word*s from *stdin*.
 
 Without option `-a` it generates an object whereby each *word* is a
@@ -51,11 +51,11 @@ the result is `true`, else `false`.
 When the `:=` operator is used in a *word*, the name to the right of
 `:=` is a file containing JSON which is parsed and assigned to the key
 left of the operator. The file may be specified as `-` to read from
-*jo*’s standard input.
+*jo*'s standard input.
 
 # TYPE COERCION
 
-*jo*’s type guesses can be overridden on a per-word basis by prefixing
+*jo*'s type guesses can be overridden on a per-word basis by prefixing
 *word* with `-s` for *string*, `-n` for *number*, or `-b` for *boolean*.
 The list of *word*s *must* be prefixed with `--`, to indicate to *jo*
 that there are no more global options.
@@ -64,13 +64,13 @@ Type coercion works as follows:
 
 | word       | \-s            | \-n       | \-b       | default        |
 | :--------- | :------------- | :-------- | :-------- | :------------- |
-| a=         | “a”:""         | “a”:0     | “a”:false | “a”:null       |
-| a=string   | “a”:“string”   | “a”:6     | “a”:true  | “a”:“string”   |
-| a="quoted" | “a”:“"quoted"” | “a”:8     | “a”:true  | “a”:“"quoted"” |
-| a=12345    | “a”:“12345”    | “a”:12345 | “a”:true  | “a”:12345      |
-| a=true     | “a”:“true”     | “a”:1     | “a”:true  | “a”:true       |
-| a=false    | “a”:“false”    | “a”:0     | “a”:false | “a”:false      |
-| a=null     | “a”:""         | “a”:0     | “a”:false | “a”:null       |
+| a=         | "a":""         | "a":0     | "a":false | "a":null       |
+| a=string   | "a":"string"   | "a":6     | "a":true  | "a":"string"   |
+| a="quoted" | "a":""quoted"" | "a":8     | "a":true  | "a":""quoted"" |
+| a=12345    | "a":"12345"    | "a":12345 | "a":true  | "a":12345      |
+| a=true     | "a":"true"     | "a":1     | "a":true  | "a":true       |
+| a=false    | "a":"false"    | "a":0     | "a":false | "a":false      |
+| a=null     | "a":""         | "a":0     | "a":false | "a":null       |
 
 Coercing a non-number string to number outputs the *length* of the
 string.
@@ -104,7 +104,7 @@ Pretty-print an array with a list of files in the current directory:
 
 Create objects within objects; this works because if the first character
 of value is an open brace or a bracket we attempt to decode the
-remainder as JSON. Beware spaces in strings …
+remainder as JSON. Beware spaces in strings ...
 
     $ jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20 list=$(jo -a 1 2 3 4 5)) number=17) sunday@0
     {
@@ -129,8 +129,8 @@ remainder as JSON. Beware spaces in strings …
     }
 
 Booleans as strings or as boolean (pay particular attention to *switch*;
-the `-B` option disables the default detection of the “`true`”,
-“`false`”, and “`null`” strings):
+the `-B` option disables the default detection of the "`true`",
+"`false`", and "`null`" strings):
 
     $ jo switch=true morning@0
     {"switch":true,"morning":false}
@@ -266,13 +266,13 @@ Deduplicate object keys (*jo* appends duplicate object keys by default):
     Interpret the list of *words* as array values and produce an array
     instead of an object.
   - \-B  
-    By default, *jo* interprets the strings “`true`” and “`false`” as
-    boolean elements `true` and `false` respectively, and “`null`” as
+    By default, *jo* interprets the strings "`true`" and "`false`" as
+    boolean elements `true` and `false` respectively, and "`null`" as
     `null`. Disable with this option.
   - \-D  
     Deduplicate object keys.
   - \-e  
-    Ignore empty stdin (i.e. don’t produce a diagnostic error when
+    Ignore empty stdin (i.e. don't produce a diagnostic error when
     *stdin* is empty)
   - \-n  
     Do not add keys with empty values.
@@ -290,7 +290,7 @@ Probably.
 
 If a value given to *jo* expands to empty in the shell, then *jo*
 produces a `null` in object mode, and might appear to hang in array
-mode; it is not hanging, rather it’s reading *stdin*. This is not a bug.
+mode; it is not hanging, rather it's reading *stdin*. This is not a bug.
 
 Numeric values are converted to numbers which can produce undesired
 results. If you quote a numeric value, *jo* will make it a string.
