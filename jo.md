@@ -1,26 +1,19 @@
----
-title: JO(1) User Manuals
----
-
-NAME
-====
+# NAME
 
 jo - JSON output from a shell
 
-SYNOPSIS
-========
+# SYNOPSIS
 
 jo \[-p\] \[-a\] \[-B\] \[-D\] \[-e\] \[-n\] \[-v\] \[-V\] \[-d
-keydelim\] \[-f file\] \[--\] \[ \[-s\|-n\|-b\] word ...\]
+keydelim\] \[-f file\] \[–\] \[ \[-s|-n|-b\] word …\]
 
-DESCRIPTION
-===========
+# DESCRIPTION
 
 *jo* creates a JSON string on *stdout* from *word*s given it as
 arguments or read from *stdin*. If `-f` is specified, *jo* first loads
 the contents of *file* as a JSON object or array, then modifies it with
 subsequent *word*s before printing the final JSON string to *stdout*.
-*file* may be specified as `-` to read from *jo*'s standard input; this
+*file* may be specified as `-` to read from *jo*’s standard input; this
 takes precedence over reading *word*s from *stdin*.
 
 Without option `-a` it generates an object whereby each *word* is a
@@ -40,11 +33,11 @@ individual components are separated by the first character of
 *jo* normally treats *value* as a literal string value, unless it begins
 with one of the following characters:
 
-  value   action
-  ------- ---------------------------------------------------------------------
-  @file   substitute the contents of *file* as-is
-  %file   substitute the contents of *file* in base64-encoded form
-  :file   interpret the contents of *file* as JSON, and substitute the result
+| value | action                                                              |
+| ----- | ------------------------------------------------------------------- |
+| @file | substitute the contents of *file* as-is                             |
+| %file | substitute the contents of *file* in base64-encoded form            |
+| :file | interpret the contents of *file* as JSON, and substitute the result |
 
 Escape the special character with a backslash to prevent this
 interpretation.
@@ -58,27 +51,26 @@ the result is `true`, else `false`.
 When the `:=` operator is used in a *word*, the name to the right of
 `:=` is a file containing JSON which is parsed and assigned to the key
 left of the operator. The file may be specified as `-` to read from
-*jo*'s standard input.
+*jo*’s standard input.
 
-TYPE COERCION
-=============
+# TYPE COERCION
 
-*jo*'s type guesses can be overridden on a per-word basis by prefixing
+*jo*’s type guesses can be overridden on a per-word basis by prefixing
 *word* with `-s` for *string*, `-n` for *number*, or `-b` for *boolean*.
 The list of *word*s *must* be prefixed with `--`, to indicate to *jo*
 that there are no more global options.
 
 Type coercion works as follows:
 
-  word           -s                 -n          -b          default
-  -------------- ------------------ ----------- ----------- ------------------
-  a=             "a":\"\"           "a":0       "a":false   "a":null
-  a=string       "a":"string"       "a":6       "a":true    "a":"string"
-  a=\"quoted\"   "a":"\"quoted\""   "a":8       "a":true    "a":"\"quoted\""
-  a=12345        "a":"12345"        "a":12345   "a":true    "a":12345
-  a=true         "a":"true"         "a":1       "a":true    "a":true
-  a=false        "a":"false"        "a":0       "a":false   "a":false
-  a=null         "a":\"\"           "a":0       "a":false   "a":null
+| word       | \-s            | \-n       | \-b       | default        |
+| :--------- | :------------- | :-------- | :-------- | :------------- |
+| a=         | “a”:""         | “a”:0     | “a”:false | “a”:null       |
+| a=string   | “a”:“string”   | “a”:6     | “a”:true  | “a”:“string”   |
+| a="quoted" | “a”:“"quoted"” | “a”:8     | “a”:true  | “a”:“"quoted"” |
+| a=12345    | “a”:“12345”    | “a”:12345 | “a”:true  | “a”:12345      |
+| a=true     | “a”:“true”     | “a”:1     | “a”:true  | “a”:true       |
+| a=false    | “a”:“false”    | “a”:0     | “a”:false | “a”:false      |
+| a=null     | “a”:""         | “a”:0     | “a”:false | “a”:null       |
 
 Coercing a non-number string to number outputs the *length* of the
 string.
@@ -89,8 +81,7 @@ is empty, `true` otherwise.
 Type coercion only applies to `key=value` words, and individual words in
 a `-a` array. Coercing other words has no effect.
 
-EXAMPLES
-========
+# EXAMPLES
 
 Create an object. Note how the incorrectly-formatted float value becomes
 a string:
@@ -113,7 +104,7 @@ Pretty-print an array with a list of files in the current directory:
 
 Create objects within objects; this works because if the first character
 of value is an open brace or a bracket we attempt to decode the
-remainder as JSON. Beware spaces in strings ...
+remainder as JSON. Beware spaces in strings …
 
     $ jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20 list=$(jo -a 1 2 3 4 5)) number=17) sunday@0
     {
@@ -138,12 +129,12 @@ remainder as JSON. Beware spaces in strings ...
     }
 
 Booleans as strings or as boolean (pay particular attention to *switch*;
-the `-B` option disables the default detection of the "`true`",
-"`false`", and "`null`" strings):
+the `-B` option disables the default detection of the “`true`”,
+“`false`”, and “`null`” strings):
 
     $ jo switch=true morning@0
     {"switch":true,"morning":false}
-
+    
     $ jo -B switch=true morning@0
     {"switch":"true","morning":false}
 
@@ -195,7 +186,7 @@ Create empty objects or arrays, intentionally or potentially:
 
     $ jo < /dev/null
     {}
-
+    
     $ MY_ARRAY=(a=1 b=2)
     $ jo -a "${MY_ARRAY[@]}" < /dev/null
     ["a=1","b=2"]
@@ -213,7 +204,7 @@ Type coercion:
        "g": 14,
        "h": true
     }
-
+    
     $ jo -a -- -s 123 -n "This is a test" -b C_Rocks 456
     ["123",14,true,456]
 
@@ -223,10 +214,10 @@ it starts with `:` the contents are interpreted as JSON:
 
     $ jo program=jo authors=@AUTHORS
     {"program":"jo","authors":"Jan-Piet Mens <jpmens@gmail.com>"}
-
+    
     $ jo filename=AUTHORS content=%AUTHORS
     {"filename":"AUTHORS","content":"SmFuLVBpZXQgTWVucyA8anBtZW5zQGdtYWlsLmNvbT4K"}
-
+    
     $ jo nested=:nested.json
     {"nested":{"field1":123,"field2":"abc"}}
 
@@ -234,20 +225,20 @@ These characters can be escaped to avoid interpretation:
 
     $ jo name="JP Mens" twitter='\@jpmens'
     {"name":"JP Mens","twitter":"@jpmens"}
-
+    
     $ jo char=" " URIescape=\\%20
     {"char":" ","URIescape":"%20"}
-
+    
     $ jo action="split window" vimcmd="\:split"
     {"action":"split window","vimcmd":":split"}
 
-Read element values from a file in order to overcome ARG_MAX limits
+Read element values from a file in order to overcome ARG\_MAX limits
 during object assignment:
 
     $ ls | jo -a > child.json
     $ jo files:=child.json
     {"files":["AUTHORS","COPYING","ChangeLog" ....
-
+    
     $ ls *.c | jo -a > source.json; ls *.h | jo -a > headers.json
     $ jo -a :source.json :headers.json
     [["base64.c","jo.c","json.c"],["base64.h","json.h"]]
@@ -256,7 +247,7 @@ Add elements to existing JSON:
 
     $ jo -f source.json 1 | jo -f - 2 3
     ["base64.c","jo.c","json.c",1,2,3]
-
+    
     $ curl -s 'https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | jo -f - status=Rickrolled
     { ...., "type":"video","author_url":"https://www.youtube.com/user/RickAstleyVEVO","status":"Rickrolled"}
 
@@ -267,48 +258,39 @@ Deduplicate object keys (*jo* appends duplicate object keys by default):
     $ jo -D a=1 b=2 a=3
     {"a":3,"b":2}
 
-OPTIONS
-=======
+# OPTIONS
 
 *jo* understands the following global options.
 
--a
-:   Interpret the list of *words* as array values and produce an array
+  - \-a  
+    Interpret the list of *words* as array values and produce an array
     instead of an object.
-
--B
-:   By default, *jo* interprets the strings "`true`" and "`false`" as
-    boolean elements `true` and `false` respectively, and "`null`" as
+  - \-B  
+    By default, *jo* interprets the strings “`true`” and “`false`” as
+    boolean elements `true` and `false` respectively, and “`null`” as
     `null`. Disable with this option.
-
--D
-:   Deduplicate object keys.
-
--e
-:   Ignore empty stdin (i.e. don't produce a diagnostic error when
+  - \-D  
+    Deduplicate object keys.
+  - \-e  
+    Ignore empty stdin (i.e. don’t produce a diagnostic error when
     *stdin* is empty)
-
--n
-:   Do not add keys with empty values.
-
--p
-:   Pretty-print the JSON string on output instead of the terse one-line
+  - \-n  
+    Do not add keys with empty values.
+  - \-p  
+    Pretty-print the JSON string on output instead of the terse one-line
     output it prints by default.
+  - \-v  
+    Show version and exit.
+  - \-V  
+    Show version as a JSON object and exit.
 
--v
-:   Show version and exit.
-
--V
-:   Show version as a JSON object and exit.
-
-BUGS
-====
+# BUGS
 
 Probably.
 
 If a value given to *jo* expands to empty in the shell, then *jo*
 produces a `null` in object mode, and might appear to hang in array
-mode; it is not hanging, rather it's reading *stdin*. This is not a bug.
+mode; it is not hanging, rather it’s reading *stdin*. This is not a bug.
 
 Numeric values are converted to numbers which can produce undesired
 results. If you quote a numeric value, *jo* will make it a string.
@@ -323,31 +305,26 @@ Omitting a closing bracket on a nested element causes a diagnostic
 message to print, but the output contains garbage anyway. This was
 designed thusly.
 
-RETURN CODES
-============
+# RETURN CODES
 
 *jo* exits with a code 0 on success and non-zero on failure after
 indicating what caused the failure.
 
-AVAILABILITY
-============
+# AVAILABILITY
 
 <http://github.com/jpmens/jo>
 
-CREDITS
-=======
+# CREDITS
 
--   This program uses `json.[ch]`, by Joseph A. Adams.
+  - This program uses `json.[ch]`, by Joseph A. Adams.
 
-SEE ALSO
-========
+# SEE ALSO
 
--   <https://stedolan.github.io/jq/>
--   <https://github.com/micha/jsawk>
--   <https://github.com/jtopjian/jsed>
--   strtod(3)
+  - <https://stedolan.github.io/jq/>
+  - <https://github.com/micha/jsawk>
+  - <https://github.com/jtopjian/jsed>
+  - strtod(3)
 
-AUTHOR
-======
+# AUTHOR
 
 Jan-Piet Mens <http://jpmens.net>

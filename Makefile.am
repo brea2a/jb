@@ -28,7 +28,7 @@ jo.1: jo.pandoc
 jo.md: jo.pandoc
 	@test -n "$(PANDOC)" || \
 	  { echo 'pandoc' not found during configure.; exit 1; }
-	$(PANDOC) -s -w markdown+simple_tables -f markdown -o $@ $<
+	$(PANDOC) -s -w gfm -f markdown -o $@ $<
 
 endif
 
