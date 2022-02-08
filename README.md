@@ -99,4 +99,4 @@ scoop install jo
 
 ## Credits
 
-* `json.[ch]` by 2011 Joseph A. Adams (joeyadams3.14159@gmail.com).
+* `json.[ch]` by 2011 Joseph A. Adams (joeyadams3.14159[at]gmail.com).
