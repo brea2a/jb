@@ -43,7 +43,7 @@ make install
 To install from the repository, you will need a C compiler as well as a relatively recent version of _automake_ and _autoconf_.
 
 ```bash
-git clone git://github.com/jpmens/jo.git
+git clone git@github.com:jpmens/jo.git  # or git clone https://github.com/jpmens/jo.git
 cd jo
 autoreconf -i
 ./configure
