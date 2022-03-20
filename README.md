@@ -86,6 +86,14 @@ Thanks to [Roger Light](https://twitter.com/ralight/status/1166023769623867398),
 scoop install jo
 ```
 
+### Windows WSL2
+
+As shown in [#175](https://github.com/jpmens/jo/issues/175) when using _git_ on Windows WSL2 it should be necessary to disable automatic CRLF conversion in _git_ or the tests will fail:
+
+```cmd
+git config --local core.autocrlf false
+```
+
 ## Others
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
