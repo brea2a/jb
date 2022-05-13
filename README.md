@@ -59,6 +59,12 @@ make install
 brew install jo
 ```
 
+### MacPorts
+
+```bash
+sudo port install jo
+```
+
 ### Ubuntu
 
 ```
