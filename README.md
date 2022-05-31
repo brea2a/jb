@@ -103,7 +103,7 @@ git config --local core.autocrlf false
 ## Others
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
-* [ArchLinux](https://aur.archlinux.org/packages/jo/)
+* [ArchLinux](https://archlinux.org/packages/community/x86_64/jo/)
 * [OpenBSD](http://openports.se/textproc/jo)
 * [FreeBSD](https://www.freshports.org/textproc/jo)
 * [Guix](https://guix.gnu.org/packages/jo-1.4/)
