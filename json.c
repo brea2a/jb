@@ -34,9 +34,9 @@
 		exit(EXIT_FAILURE);                     \
 	} while (0)
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_AIX)
 # define failx(e, n, f, ...)	if (!(e)) {	\
-		fprintf(stderr, "JSON_ERR: " f, __VA_ARGS__);	\
+		fprintf(stderr, "jo: JSON_ERR: " f "\n", __VA_ARGS__);	\
 		exit(n);	\
 	}
 #else

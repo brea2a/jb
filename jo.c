@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <getopt.h>
+#ifndef _AIX
+# include <getopt.h>
+#endif
 #include <ctype.h>
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_AIX)
 # include <err.h>
 #endif
 #include "json.h"
@@ -44,9 +46,12 @@
 
 static JsonNode *pile;		/* pile of nested objects/arrays */
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_AIX)
 # define err(n, s)	{ fprintf(stderr, s); exit(n); }
 # define errx(n, f, a)	{ fprintf(stderr, f, a); exit(n); }
+#endif
+
+#ifdef _WIN32
 # define fseeko	fseek
 # define ftello	ftell
 #endif

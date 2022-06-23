@@ -100,6 +100,10 @@ As shown in [#175](https://github.com/jpmens/jo/issues/175) when using _git_ on 
 git config --local core.autocrlf false
 ```
 
+### AIX
+
+_jo_ builds and passes all tests on AIX 7.1 using the _autoconf_, _automake_, _gcc_, and _pkg-config_ RPMs from IBM's [AIX Toolbox for Open Source Software](https://www.ibm.com/support/pages/node/883796).  The _xlclang_ compiler from IBM's xlC/C++ suite for AIX will also build _jo_.
+
 ## Others
 
 * [voidlinux](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/jo)
