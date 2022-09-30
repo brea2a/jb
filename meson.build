@@ -56,7 +56,8 @@ jo1 = custom_target('jo.1',
                     command: [pandoc_commands, '@OUTPUT@', '@INPUT@']).full_path()
 run_command(pandoc_commands,
             join_paths(meson.current_build_dir(), 'jo.1'),
-            join_paths(meson.current_source_dir(), 'jo.pandoc'))
+            join_paths(meson.current_source_dir(), 'jo.pandoc'),
+            check: false)
 custom_target('jo.md',
               output: 'jo.md',
               input: 'jo.pandoc',
