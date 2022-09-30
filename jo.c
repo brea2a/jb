@@ -341,7 +341,7 @@ JsonNode *boolnode(char *str)
 
 int usage(char *prog)
 {
-	fprintf(stderr, "Usage: %s [-a] [-B] [-D] [-d keydelim] [-p] [-e] [-n] [-v] [-V] [-f file] [--] [-s|-n|-b] [word...]\n", prog);
+	fprintf(stderr, "Usage: %s [-a] [-B] [-D] [-d keydelim] [-p] [-e] [-n] [-o outfile] [-v] [-V] [-f file] [--] [-s|-n|-b] [word...]\n", prog);
 	fprintf(stderr, "\tword is key=value or key@value\n");
 	fprintf(stderr, "\t-a creates an array of words\n");
 	fprintf(stderr, "\t-B disable boolean true/false/null detection\n");
@@ -353,6 +353,7 @@ int usage(char *prog)
 	fprintf(stderr, "\t-s coerce type guessing to string\n");
 	fprintf(stderr, "\t-b coerce type guessing to bool\n");
 	fprintf(stderr, "\t-n coerce type guessing to number\n");
+	fprintf(stderr, "\t-o output to the given file\n");
 	fprintf(stderr, "\t-v show version\n");
 	fprintf(stderr, "\t-V show version in JSON\n");
 
@@ -602,8 +603,11 @@ int main(int argc, char **argv)
 	bool showversion = false;
 	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
 	char *in_file = NULL, *in_str;
+	char *out_file = NULL;
+	FILE *out = stdout;
 	size_t in_len = 0;
-	int ttyin = isatty(fileno(stdin)), ttyout = isatty(fileno(stdout));
+	int ttyin = isatty(fileno(stdin));
+	int ttyout = isatty(fileno(stdout));
 	int flags = 0;
 	JsonNode *json, *op;
 
@@ -615,7 +619,7 @@ int main(int argc, char **argv)
 
 	progname = (progname = strrchr(*argv, '/')) ? progname + 1 : *argv;
 
-	while ((c = getopt(argc, argv, "aBDd:f:hpenvV")) != EOF) {
+	while ((c = getopt(argc, argv, "aBDd:f:hpeno:vV")) != EOF) {
 		switch (c) {
 			case 'a':
 				flags |= FLAG_ARRAY;
@@ -643,6 +647,9 @@ int main(int argc, char **argv)
 				break;
 			case 'n':
 				flags |= FLAG_SKIPNULLS;
+				break;
+			case 'o':
+				out_file = optarg;
 				break;
 			case 'v':
 				printf("jo %s\n", PACKAGE_VERSION);
@@ -752,8 +759,16 @@ int main(int argc, char **argv)
 		exit(2);
 	}
 
+	if (out_file != NULL) {
+		out = fopen(out_file, "w");
+		if (out == NULL) {
+			perror(out_file);
+			errx(1, "Cannot open %s for writing", out_file);
+		}
+		ttyout = isatty(fileno(out));
+	}
 	p = ttyout ? locale_from_utf8(js_string, -1) : js_string;
-	printf("%s\n", p);
+	fprintf(out, "%s\n", p);
 	if (ttyout) locale_free(p);
 	free(js_string);
 	json_delete(json);
