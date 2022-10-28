@@ -62,6 +62,8 @@ static JsonNode *pile;		/* pile of nested objects/arrays */
 #define TAG_FLAG_NUMBER   (TAG_TO_FLAGS(JSON_NUMBER))
 #define COERCE_MASK       (TAG_FLAG_BOOL | TAG_FLAG_STRING | TAG_FLAG_NUMBER)
 
+#define debug(format, args...) fprintf (stderr, format, args)
+
 JsonTag flags_to_tag(int flags) {
 	return flags / (FLAG_MASK + 1);
 }
@@ -106,11 +108,45 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 	}
 }
 
-char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
+char *slurp(FILE *fp, off_t bufblk_sz, int eos_char, size_t *out_len, bool fold_newlines)
 {
 	char *buf;
 	int i = 0;
-	int ch;
+	int ch = EOF;
+	off_t buffer_len = bufblk_sz;
+
+	if ((buf = malloc(buffer_len)) == NULL) {
+		i = -1;
+	} else {
+		while ((ch = fgetc(fp)) != eos_char && ch != EOF) {
+			if (i == (buffer_len - 1)) {
+				buffer_len += bufblk_sz;
+				if ((buf = realloc(buf, buffer_len)) == NULL) {
+					i = -1;
+					break;
+				}
+			}
+			if (ch != '\n' || !fold_newlines) {
+				buf[i++] = ch;
+			}
+		}
+	}
+	if (ch == EOF && i <= 0) {
+		/* EOF at first read */
+		if (buf) {
+			free(buf);
+			buf = NULL;
+		}
+	} else if (buf) {
+		buf[i] = 0;
+	}
+	*out_len = i;
+	return buf;
+}
+
+char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
+{
+	char *buf;
 	off_t buffer_len;
 	FILE *fp;
 	bool use_stdin = strcmp(filename, "-") == 0;
@@ -130,24 +166,23 @@ char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 		fseeko(fp, 0, SEEK_SET);
 	}
 
-	if ((buf = malloc(buffer_len)) == NULL) {
+	buf = slurp(fp, buffer_len, EOF, out_len, fold_newlines);
+	if (*out_len < 0) {
 		errx(1, "File %s is too large to be read into memory", filename);
 	}
-	while ((ch = fgetc(fp)) != EOF) {
-		if (i == (buffer_len - 1)) {
-			buffer_len += SLURP_BLOCK_SIZE;
-			if ((buf = realloc(buf, buffer_len)) == NULL) {
-				errx(1, "File %s is too large to be read into memory", filename);
-			}
-		}
-		if (ch != '\n' || !fold_newlines) {
-			buf[i++] = ch;
-		}
-	}
 	if (!use_stdin) fclose(fp);
-	buf[i] = 0;
-	*out_len = i;
-	return (buf);
+	return buf;
+}
+
+char *slurp_line(FILE *fp, size_t *out_len)
+{
+	char *buf;
+
+	buf = slurp(fp, SLURP_BLOCK_SIZE, '\n', out_len, false);
+	if (*out_len < 0) {
+		errx(1, "Line too large to be read into memory");
+	}
+	return buf;
 }
 
 JsonNode *jo_mknull(JsonTag type) {
@@ -601,7 +636,7 @@ int main(int argc, char **argv)
 {
 	int c, key_delim = 0;
 	bool showversion = false;
-	char *kv, *js_string, *progname, buf[BUFSIZ], *p;
+	char *kv, *js_string, *progname, *buf, *p;
 	char *in_file = NULL, *in_str;
 	char *out_file = NULL;
 	FILE *out = stdout;
@@ -695,12 +730,11 @@ int main(int argc, char **argv)
 		if (flags & FLAG_NOSTDIN) {
 			return(0);
 		}
-		while (fgets(buf, sizeof(buf), stdin) != NULL) {
-			if (buf[strlen(buf) - 1] == '\n')
-				buf[strlen(buf) - 1] = 0;
+		while ((buf = slurp_line(stdin, &in_len)) != NULL && in_len > 0) {
 			p = ttyin ? utf8_from_locale(buf, -1) : buf;
 			append_kv(json, flags, key_delim, p);
 			if (ttyin) utf8_free(p);
+			if (buf) free(buf);
 		}
 	} else {
 		while ((kv = *argv++)) {
