@@ -51,7 +51,7 @@ static JsonNode *pile;		/* pile of nested objects/arrays */
 # define errx(n, f, a)	{ fprintf(stderr, f, a); exit(n); }
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(fseeko)
 # define fseeko	fseek
 # define ftello	ftell
 #endif
