@@ -167,7 +167,7 @@ char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 	}
 
 	buf = slurp(fp, buffer_len, EOF, out_len, fold_newlines);
-	if (*out_len < 0) {
+	if (*out_len == (size_t)-1) {
 		errx(1, "File %s is too large to be read into memory", filename);
 	}
 	if (!use_stdin) fclose(fp);
@@ -179,7 +179,7 @@ char *slurp_line(FILE *fp, size_t *out_len)
 	char *buf;
 
 	buf = slurp(fp, SLURP_BLOCK_SIZE, '\n', out_len, false);
-	if (*out_len < 0) {
+	if (*out_len == (size_t)-1) {
 		errx(1, "Line too large to be read into memory");
 	}
 	return buf;
@@ -545,7 +545,7 @@ char* utf8_from_locale(const char *str, size_t len)
 	if (len == 0) {
 		return strdup("");
 	}
-	if (len == -1) {
+	if (len == (size_t)-1) {
 		len = strlen(str);
 	}
 	wcssize = MultiByteToWideChar(GetACP(), 0, str, len,  NULL, 0);
@@ -578,7 +578,7 @@ char* locale_from_utf8(const char *utf8, size_t len)
 	if (len == 0) {
 		return strdup("");
 	}
-	if (len == -1) {
+	if (len == (size_t)-1) {
 		len = strlen(utf8);
 	}
 	wcssize = MultiByteToWideChar(CP_UTF8, 0, utf8, len,  NULL, 0);
