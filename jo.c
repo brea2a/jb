@@ -47,8 +47,32 @@
 static JsonNode *pile;		/* pile of nested objects/arrays */
 
 #if defined(_WIN32) || defined(_AIX)
-# define err(n, s)	{ fprintf(stderr, s); exit(n); }
-# define errx(n, f, a)	{ fprintf(stderr, f, a); exit(n); }
+#include <errno.h>
+#include <stdarg.h>
+static inline void err(int eval, const char *fmt, ...) {
+	int errnum = errno;
+
+	va_list ap;
+	va_start(ap, fmt);
+
+	fprintf(stderr, "jo: ");
+	vfprintf(stderr, fmt, ap);
+	fprintf(stderr, ": %s\n", strerror(errnum));
+
+	va_end(ap);
+	exit(eval);
+}
+static inline void errx(int eval, const char *fmt, ...) {
+	va_list ap;
+	va_start(ap, fmt);
+
+	fprintf(stderr, "jo: ");
+	vfprintf(stderr, fmt, ap);
+	fprintf(stderr, "\n");
+
+	va_end(ap);
+	exit(eval);
+}
 #endif
 
 #if defined(_WIN32) && !defined(fseeko)
