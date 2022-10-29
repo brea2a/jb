@@ -1,4 +1,10 @@
 
+2022-10-29 1.7
+- FIX: fix warnings on Windows build and reimplement err{x,} functions (#193)
+- FIX: fix reading of long lines from stdin and refactor slurp_file() in the process. (#192)
+- NEW: Add option -o outfile for when not run from a shell and redirect '>' is not an option. (#189)
+- FIX: fix tables in jo.md (#167)
+
 2022-01-05 1.6
 
 - FIX: repair tests broken by AUTHORS change (#164)
