@@ -1,4 +1,7 @@
 
+2022-11-04 1.8
+- FIX: fix reading of long lines from stdin (mk 2) (#195)
+
 2022-10-29 1.7
 - FIX: fix warnings on Windows build and reimplement err{x,} functions (#193)
 - FIX: fix reading of long lines from stdin and refactor slurp_file() in the process. (#192)
