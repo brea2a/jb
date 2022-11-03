@@ -86,8 +86,6 @@ static inline void errx(int eval, const char *fmt, ...) {
 #define TAG_FLAG_NUMBER   (TAG_TO_FLAGS(JSON_NUMBER))
 #define COERCE_MASK       (TAG_FLAG_BOOL | TAG_FLAG_STRING | TAG_FLAG_NUMBER)
 
-#define debug(format, args...) fprintf (stderr, format, args)
-
 JsonTag flags_to_tag(int flags) {
 	return flags / (FLAG_MASK + 1);
 }
@@ -132,21 +130,22 @@ void json_copy_to_object(JsonNode * obj, JsonNode * object_or_array, int clobber
 	}
 }
 
-char *slurp(FILE *fp, off_t bufblk_sz, int eos_char, size_t *out_len, bool fold_newlines)
+int slurp(FILE *fp, char **bufp, off_t bufblk_sz, int eos_char, size_t *out_len, bool fold_newlines)
 {
 	char *buf;
-	int i = 0;
+	int result = 0;
+	size_t i = 0;
 	int ch = EOF;
-	off_t buffer_len = bufblk_sz;
+	size_t buffer_len = bufblk_sz;
 
 	if ((buf = malloc(buffer_len)) == NULL) {
-		i = -1;
+		result = -1;
 	} else {
 		while ((ch = fgetc(fp)) != eos_char && ch != EOF) {
 			if (i == (buffer_len - 1)) {
 				buffer_len += bufblk_sz;
 				if ((buf = realloc(buf, buffer_len)) == NULL) {
-					i = -1;
+					result = -1;
 					break;
 				}
 			}
@@ -155,17 +154,15 @@ char *slurp(FILE *fp, off_t bufblk_sz, int eos_char, size_t *out_len, bool fold_
 			}
 		}
 	}
-	if (ch == EOF && i <= 0) {
-		/* EOF at first read */
-		if (buf) {
-			free(buf);
-			buf = NULL;
-		}
-	} else if (buf) {
+	if (result < 0) {
+		free(buf);
+		buf = NULL;
+	} else {
 		buf[i] = 0;
 	}
 	*out_len = i;
-	return buf;
+        *bufp = buf;
+	return result;
 }
 
 char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
@@ -190,8 +187,7 @@ char *slurp_file(const char* filename, size_t *out_len, bool fold_newlines)
 		fseeko(fp, 0, SEEK_SET);
 	}
 
-	buf = slurp(fp, buffer_len, EOF, out_len, fold_newlines);
-	if (*out_len == (size_t)-1) {
+	if (slurp(fp, &buf, buffer_len, EOF, out_len, fold_newlines) < 0) {
 		errx(1, "File %s is too large to be read into memory", filename);
 	}
 	if (!use_stdin) fclose(fp);
@@ -202,8 +198,7 @@ char *slurp_line(FILE *fp, size_t *out_len)
 {
 	char *buf;
 
-	buf = slurp(fp, SLURP_BLOCK_SIZE, '\n', out_len, false);
-	if (*out_len == (size_t)-1) {
+	if (slurp(fp, &buf, SLURP_BLOCK_SIZE, '\n', out_len, false) < 0) {
 		errx(1, "Line too large to be read into memory");
 	}
 	return buf;

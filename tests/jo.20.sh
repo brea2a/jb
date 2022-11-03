@@ -7,3 +7,7 @@ ${JO:-jo} -a :$$.1 :$$.2
 
 rm -f $$.1
 rm -f $$.2
+
+# read large json array elements
+${JO:-jo} -a < ${srcdir:=.}/tests/jo-large1.json
+${JO:-jo} -a :${srcdir:=.}/tests/jo-large2.json :${srcdir:=.}/tests/jo-large1.json
