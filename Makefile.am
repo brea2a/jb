@@ -67,7 +67,7 @@ EXTRA_DIST	= $(jo_EXTRA) \
 		  tests/jo.17.sh tests/jo.17.exp tests/jo-creator.txt \
 		  tests/jo.18.sh tests/jo.18.exp \
 		  tests/jo.19.sh tests/jo.19.exp \
-		  tests/jo.20.sh tests/jo.20.exp \
+		  tests/jo.20.sh tests/jo.20.exp tests/jo-large1.json tests/jo-large2.json \
 		  tests/jo.21.sh tests/jo.21.exp \
 		  tests/jo.22.sh tests/jo.22.exp \
 		  tests/jo.23.sh tests/jo.23.exp \

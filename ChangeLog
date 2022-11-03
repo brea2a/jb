@@ -1,4 +1,8 @@
 
+2022-11-04 1.9
+- FIX: fix reading of long lines from stdin (mk 2) (#195)
+- FIX: add missing test files (#196)
+
 2022-11-04 1.8
 - FIX: fix reading of long lines from stdin (mk 2) (#195)
 
