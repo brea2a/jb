@@ -120,6 +120,7 @@ _jo_ builds and passes all tests on AIX 7.1 using the _autoconf_, _automake_, _g
 * [gjo](https://github.com/skanehira/gjo)
 * [rjo](https://github.com/dskkato/rjo)
 * [jjo](https://github.com/memoryhole/jjo)
+* [jf](https://github.com/sayanarijit/jf)
 
 ## Credits
 
